@@ -17,7 +17,7 @@
         <u-form-item
           label="我需求"
           prop="title"
-          :leftIconStyle="{color: '#EB6618', fontSize: '26rpx'}"
+          :leftIconStyle="{ color: '#EB6618', fontSize: '26rpx' }"
           left-icon="file-text"
           label-width="140"
         >
@@ -26,7 +26,7 @@
         <u-form-item
           label="手机号"
           prop="phone"
-          :leftIconStyle="{color: '#EB6618', fontSize: '26rpx'}"
+          :leftIconStyle="{ color: '#EB6618', fontSize: '26rpx' }"
           left-icon="phone"
           label-width="140"
         >
@@ -108,14 +108,28 @@ export default {
       }
       this.$axios.post(this.$api.createIntegrate, obj).then(res => {
         if (res.code == 200) {
-          this.$refs.uToast.show({
-            title: '提交成功',
-            type: 'success'
+          let data = {
+            proid: '',
+            type: '专业顾问', // 数据来源
+            name: uni.getStorageSync('vipUserInfo').username || '前端咨询', // 客户名称
+            phone: this.form.phone, // 电话
+            submitby: uni.getStorageSync('vipUserInfo').username || '未登录提交', // 提交人
+            handler: 'all', // 处理人
+            path: '/Integrate', // 跳转至综合服务
+            read: 'false' // 是否已处理
+          } 
+          this.$axios.post(this.$api.createAgent, data).then(res => {
+            if (res.code == 200) {
+              this.$refs.uToast.show({
+                title: "提交成功",
+                type: "success",
+              });
+              this.form = {
+                title: "",
+                phone: "",
+              };
+            }
           })
-          this.form = {
-            title: '',
-            phone: ''
-          }
         }
       })
     }
