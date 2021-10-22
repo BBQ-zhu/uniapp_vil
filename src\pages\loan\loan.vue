@@ -5,7 +5,9 @@
       back-icon-color="#fff"
       title="贷款申请"
       title-color="#fff"
-      :background="{backgroundImage:'linear-gradient(to right bottom,#46e3c4,#3cc8c9)'}"
+      :background="{
+        backgroundImage: 'linear-gradient(to right bottom,#46e3c4,#3cc8c9)',
+      }"
     ></u-navbar>
     <view class="content">
       <u-form :model="ruleForm" label-width="200" ref="ruleForm">
@@ -740,7 +742,12 @@ export default {
   },
   methods: {
     submit() {
-      if (!this.ruleForm.name || !this.ruleForm.phone || !this.ruleForm.manager1 || !this.ruleForm.manager2) {
+      if (
+        !this.ruleForm.name ||
+        !this.ruleForm.phone ||
+        !this.ruleForm.manager1 ||
+        !this.ruleForm.manager2
+      ) {
         uni.showToast({
           title: '请输入客户姓名和电话',
           icon: 'none'
@@ -756,15 +763,29 @@ export default {
       }
       this.$axios.post(this.$api.createCustomer, this.ruleForm).then(res => {
         if (res.code == 200) {
-          uni.showToast({
-            title: '提交成功',
-            icon: 'none'
+          let data = {
+            proid: 'new',
+            type: '提交-贷款资料', // 数据来源
+            name: this.ruleForm.name, // 客户名称
+            phone: this.ruleForm.phone, // 电话
+            submitby: this.ruleForm.manager1, // 提交人
+            handler: this.ruleForm.manager2, // 处理人
+            path: '/Customer', // 跳转贷款资料
+            read: 'false' // 是否已处理
+          } 
+          this.$axios.post(this.$api.createAgent, data).then(res => {
+            if (res.code == 200) {
+              uni.showToast({
+                title: '提交成功',
+                icon: 'none'
+              })
+              setTimeout(() => {
+                uni.navigateBack({
+                  delta: 1
+                })
+              }, 1000)
+            }
           })
-          setTimeout(() => {
-            uni.navigateBack({
-                delta: 1
-            });
-          }, 1000)
         }
       })
     },
