@@ -133,7 +133,7 @@
           <u-cell-item
             title="贷款申请"
             icon="rmb-circle-fill"
-            @click="cellChange('loan')"
+            @click="cellChange('loanList')"
           ></u-cell-item>
           <u-cell-item
             title="企业申请"
