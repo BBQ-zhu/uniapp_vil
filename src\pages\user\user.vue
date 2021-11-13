@@ -1,18 +1,27 @@
 <template>
-  <view class="page" style="height:calc(100vh - 50px);">
+  <view class="page" style="height: calc(100vh - 50px)">
     <view class="userCont poRelative">
       <view class="flexBetween Ctitle">
-        <u-icon name="kefu-ermai" size="40"></u-icon>
+        <u-icon
+          name="kefu-ermai"
+          size="40"
+          @click="$commonJS.gottkefu"
+        ></u-icon>
         <view>个人中心</view>
         <u-icon name="grid" size="40" @click="gridLogin"></u-icon>
       </view>
       <view class="flexStart artName">
-        <u-avatar :src="avatarSrc" :show-level="true"></u-avatar>
-        <view v-if="!vipUserInfo.username" class="artPhone mt10" @click="vipLogin">游客请登录</view>
+        <u-avatar src="/static/imgs/vipCard.png"></u-avatar>
+        <view
+          v-if="!vipUserInfo.username"
+          class="artPhone mt10"
+          @click="vipLogin"
+          >游客请登录</view
+        >
         <view v-else class="artPhone">
-          {{vipUserInfo.phone}}
+          {{ vipUserInfo.phone }}
           <br />
-          <span style="margin-left:3px;">欢迎您</span>
+          <span style="margin-left: 3px">欢迎您</span>
         </view>
       </view>
       <view class="vipCard">
@@ -21,8 +30,18 @@
             <u-icon name="integral" class="mr5"></u-icon>
             <span>ZCloud会员</span>
           </view>
-          <view v-if="!vipUserInfo.username" class="vipBtn color1" @click="vipLogin">立即登录</view>
-          <view v-if="vipUserInfo.username" class="vipBtn color1" @click="show = true">退出登录</view>
+          <view
+            v-if="!vipUserInfo.username"
+            class="vipBtn color1"
+            @click="vipLogin"
+            >立即登录</view
+          >
+          <view
+            v-if="vipUserInfo.username"
+            class="vipBtn color1"
+            @click="show = true"
+            >退出登录</view
+          >
           <!-- <view v-else class="fw600 mt5 f16">{{vipUserInfo.username}}</view> -->
         </view>
       </view>
@@ -31,15 +50,15 @@
     <view class="box">
       <view class="boxCont flexBetween">
         <view class="navItem" @click="toView('application')">
-          <view class="f18 fw600 colorGreen">{{applicatList.length}}</view>
+          <view class="f18 fw600 colorGreen">{{ applicatList.length }}</view>
           <view>我的申请</view>
         </view>
         <view class="navItem" @click="toView('agents')">
-          <view class="f18 fw600 colorGreen">{{agentsList.length}}</view>
+          <view class="f18 fw600 colorGreen">{{ agentsList.length }}</view>
           <view>我的代办</view>
         </view>
         <view class="navItem" @click="toView('myContract')">
-          <view class="f18 fw600 colorGreen">{{myContList}}</view>
+          <view class="f18 fw600 colorGreen">{{ myContList }}</view>
           <view>我的合同</view>
         </view>
       </view>
@@ -47,19 +66,30 @@
         <u-cell-group class="border5 f12">
           <u-link href="http://zhulif.com/company/index.html">
             <u-cell-item title="关于我们" icon="account-fill"></u-cell-item>
-          </u-link>
-          <u-cell-item title="加入我们" icon="plus-people-fill" @click="cellChange('joinUs')"></u-cell-item>
-          <u-cell-item title="推荐客户" icon="tags-fill" @click="cellChange('referCustomers')"></u-cell-item>
-          <u-cell-item title="商务合作" icon="thumb-up-fill" @click="cellChange('business')"></u-cell-item>
+          </u-link> 
+          <u-cell-item
+            title="加入我们"
+            icon="plus-people-fill"
+            @click="cellChange('joinUs')"
+          ></u-cell-item>
+          <u-cell-item
+            title="推荐客户"
+            icon="tags-fill"
+            @click="cellChange('referCustomers')"
+          ></u-cell-item>
+          <u-cell-item
+            title="商务合作"
+            icon="thumb-up-fill"
+            @click="cellChange('business')"
+          ></u-cell-item>
         </u-cell-group>
       </view>
-      
     </view>
     <u-modal
       v-model="show"
       content="确认退出登录？"
-			@confirm="vipLogout"
-			@cancel="show = false"
+      @confirm="vipLogout"
+      @cancel="show = false"
       :show-cancel-button="true"
     ></u-modal>
   </view>
@@ -69,113 +99,118 @@
 export default {
   data() {
     return {
-      show:false,
-      avatarSrc: '',
-      vipUserInfo: '',
+      show: false,
+      vipUserInfo: "",
       applicatList: [], //我的申请
       agentsList: [], //我的代办
-      myContList: '0' //我的合同
-    }
+      myContList: "0", //我的合同
+    };
   },
   onShow() {
-    this.vipUserInfo = uni.getStorageSync('vipUserInfo') || {}
-    if(this.vipUserInfo.username){
-      this.applicat()
-      this.myCont()
+    this.vipUserInfo = uni.getStorageSync("vipUserInfo") || {};
+    if (this.vipUserInfo.username) {
+      this.applicat();
+      this.myCont();
     }
   },
   methods: {
-    vipLogout(){ //退出登录
-      uni.removeStorageSync('userInfo');
-      uni.removeStorageSync('vipUserInfo');
+    vipLogout() {
+      //退出登录
+      uni.removeStorageSync("userInfo");
+      uni.removeStorageSync("vipUserInfo");
       //重置数据
-      this.applicatList = []
-      this.agentsList = []
-      this.myContList = '0'
-      this.vipUserInfo = ''
+      this.applicatList = [];
+      this.agentsList = [];
+      this.myContList = "0";
+      this.vipUserInfo = "";
     },
     applicat() {
       //我的申请
       var data = {
         skip: 0,
         limit: 999,
-        fuzz: 'phone',
-        input: this.vipUserInfo.phone
-      }
-      this.$axios.post(this.$api.findAgent, data).then(res => {
+        fuzz: "phone",
+        input: this.vipUserInfo.phone,
+      };
+      this.$axios.post(this.$api.findAgent, data).then((res) => {
         if (
           res.code == 200 &&
           res.data.length > 0 &&
           res.data[0].data.length > 0
         ) {
-          let arr = res.data[0].data
-          let newarr = []
-          let i=0;
-          let j=0;
-          for ( i = 0; i < arr.length; i++) {
-            for ( j = i + 1; j < arr.length; j++) {
-              if (arr[i]['proid'] === arr[j]['proid']) {
-                j = false
-                break
+          let arr = res.data[0].data;
+          let newarr = [];
+          let i = 0;
+          let j = 0;
+          for (i = 0; i < arr.length; i++) {
+            for (j = i + 1; j < arr.length; j++) {
+              if (arr[i]["proid"] === arr[j]["proid"]) {
+                j = false;
+                break;
               }
             }
-            if (j) newarr.push(arr[i].type.split('-')[1])
+            if (j) newarr.push(arr[i].type.split("-")[1]);
           }
-          this.applicatList = newarr
+          this.applicatList = newarr;
         }
-      })
+      });
     },
     myCont() {
       //我的合同
       var data = {
         skip: 0,
         limit: 999,
-        fuzz: 'phone',
-        input: this.vipUserInfo.phone
-      }
-      this.$axios.post(this.$api.findContract, data).then(res => {
+        fuzz: "phone",
+        input: this.vipUserInfo.phone,
+      };
+      this.$axios.post(this.$api.findContract, data).then((res) => {
         if (
           res.code == 200 &&
           res.data.length > 0 &&
           res.data[0].data.length > 0
         ) {
-          this.myContList = res.data[0].total[0].total
-          this.agentsList = this.$commonJS.agents(res.data[0].data)
+          this.myContList = res.data[0].total[0].total;
+          //我的代办提醒计算
+          this.agentsList = this.$commonJS.agents(res.data[0].data);
         }
-      })
+      });
     },
     vipLogin() {
       uni.navigateTo({
-        url: '/pages/vipLogin/vipLogin'
-      })
+        url: "/pages/vipLogin/vipLogin",
+      });
     },
     toView(rooter) {
-      if (rooter == 'agents' && this.agentsList.length > 0) { //我的代办
+      if (rooter == "agents" && this.agentsList.length > 0) {
+        //我的代办
         uni.navigateTo({
           url:
-            '/pages/agents/agents?data=' +
-            encodeURIComponent(JSON.stringify(this.agentsList))
-        })
-      } else if (rooter == 'application' && this.applicatList != []) { //我的申请
+            "/pages/agents/agents?data=" +
+            encodeURIComponent(JSON.stringify(this.agentsList)),
+        });
+      } else if (rooter == "application" && this.applicatList != []) {
+        //我的申请
         uni.navigateTo({
-          url: '/pages/application/application?data=' +
-            encodeURIComponent(JSON.stringify(this.applicatList))
-        })
-      } else if (rooter == 'myContract' && this.myContList != '0') { //我的合同
+          url:
+            "/pages/application/application?data=" +
+            encodeURIComponent(JSON.stringify(this.applicatList)),
+        });
+      } else if (rooter == "myContract" && this.myContList != "0") {
+        //我的合同
         uni.navigateTo({
-          url: '/pages/myContract/myContract'
-        })
+          url: "/pages/myContract/myContract",
+        });
       }
     },
     cellChange(name) {
-      if (name == 'joinUs') {
+      if (name == "joinUs") {
         uni.navigateTo({
-          url: '/pages/joinUs/joinUs?name=' + name
-        })
+          url: "/pages/joinUs/joinUs?name=" + name,
+        });
       } else {
         uni.navigateTo({
-          url: '/pages/business/business?name=' + name
-        })
+          url: "/pages/business/business?name=" + name,
+        });
       }
     },
     // 内部登录
@@ -184,29 +219,29 @@ export default {
       var data = {
         skip: 0,
         limit: 1,
-        fuzz: 'phone',
-        input: this.vipUserInfo.phone
-      }
-      this.$axios.post(this.$api.findUser, data).then(res => {
+        fuzz: "phone",
+        input: this.vipUserInfo.phone,
+      };
+      this.$axios.post(this.$api.findUser, data).then((res) => {
         if (
           res.code == 200 &&
           res.data.length > 0 &&
           res.data[0].data.length > 0
         ) {
-          uni.setStorageSync('userInfo', res.data[0].data[0])
+          uni.setStorageSync("userInfo", res.data[0].data[0]);
           uni.navigateTo({
-            url: '/pages/internal/internal'
-          })
+            url: "/pages/internal/internal",
+          });
         } else {
           uni.showToast({
-            title: '暂无权限',
-            icon: 'none'
-          })
+            title: "暂无权限",
+            icon: "none",
+          });
         }
-      })
-    }
-  }
-}
+      });
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -237,7 +272,6 @@ export default {
   padding: 10px;
   color: #fff;
 }
-
 .artName {
   padding: 10px 30px;
 }
