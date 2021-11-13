@@ -103,7 +103,9 @@
 .ml20 {
     margin-left: 20px;
 }
-
+.mb5{
+    margin-bottom: 5px;
+}
 .mb10 {
     margin-bottom: 10px;
 }
@@ -144,7 +146,7 @@
     color: #8699ad;
 }
 
-.colorGreen {
+.colorGreen { 
     color: #11BBB8;
 }
 
