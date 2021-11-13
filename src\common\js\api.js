@@ -97,6 +97,7 @@ module.exports = {
     uploadContract: 'contract/uploadContract', //上传合同列表
     delateContract: 'contract/delateContract', //删除合同行
     updataContract: 'contract/updataContract', //更新合同
-
+    //操作日志管理
+    createlogs: 'logs/createlogs', //创建日志
 
 }
