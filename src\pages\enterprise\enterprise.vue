@@ -38,13 +38,25 @@
             <u-input v-model="ruleForm.main" placeholder="请输入主营项目"></u-input>
           </u-form-item>
           <u-form-item label="客户经理:" prop="manager1">
-            <u-input v-model="ruleForm.manager1" placeholder="请输入客户经理工号"></u-input>
+            <u-input
+              v-model="ruleForm.manager1"
+              @focus="findUser('manager1',ruleForm.manager1)"
+              placeholder="请输入客户经理工号"
+            ></u-input>
           </u-form-item>
           <u-form-item label="权证经理:" prop="manager2">
-            <u-input v-model="ruleForm.manager2" placeholder="请输入权证经理工号"></u-input>
+            <u-input
+              v-model="ruleForm.manager2"
+              @focus="findUser('manager2',ruleForm.manager2)"
+              placeholder="请输入权证经理工号"
+            ></u-input>
           </u-form-item>
           <u-form-item label="审核经理:" prop="manager3">
-            <u-input v-model="ruleForm.manager3" placeholder="请输入审核经理工号"></u-input>
+            <u-input
+              v-model="ruleForm.manager3"
+              @focus="findUser('manager3',ruleForm.manager3)"
+              placeholder="请输入审核经理工号"
+            ></u-input>
           </u-form-item>
           <u-form-item label="审核状态:" prop="status">
             <u-input disabled v-model="ruleForm.status" placeholder="待审核"></u-input>
@@ -52,6 +64,7 @@
         </div>
       </u-form>
     </view>
+    <userList :UserCheck="UserCheck" @cellChange="cellChange"></userList>
     <u-button hover-class="none" type="primary" class="footer" @click="submit">提交申请</u-button>
   </view>
 </template>
@@ -60,6 +73,12 @@
 export default {
   data() {
     return {
+      UserCheck: {
+        //当前选择的输入框信息
+        userShow: false,
+        name: '',
+        value: ''
+      },
       ruleForm: {
         type: '', //代理记账、企业注册
         entername: '', //企业名称
@@ -92,6 +111,17 @@ export default {
     }
   },
   methods: {
+    //点击员工查询输入框
+    findUser(name, value) {
+      this.UserCheck.userShow = true
+      this.UserCheck.name = name
+      this.UserCheck.value = value
+    },
+    //
+    cellChange(item) {
+      this.UserCheck.userShow = false
+      this.ruleForm[this.UserCheck.name] = item.uid
+    },
     typeChange(index) {
       this.ruleForm.type = this.option.type[index].text
     },
@@ -103,7 +133,7 @@ export default {
         !this.ruleForm.entername
       ) {
         uni.showToast({
-          title: '请输入信息',
+          title: '请输入完整信息',
           icon: 'none'
         })
         return
@@ -134,12 +164,19 @@ export default {
                 icon: 'none'
               })
               setTimeout(() => {
-                uni.navigateBack({
-                  delta: 1
+                uni.navigateTo({
+                  url: '/pages/internal/internal'
                 })
               }, 1000)
             }
           })
+          let userInfo = uni.getStorageSync("userInfo")
+            let dataLogs = {
+              user: `${userInfo.username}(${userInfo.uid})`,
+              logdata: JSON.stringify(this.ruleForm),
+              remarks: `移动端-新增-企业客户资料`
+            }
+            this.$axios.post(this.$api.createlogs, dataLogs)//创建日志
         }
       })
     }
