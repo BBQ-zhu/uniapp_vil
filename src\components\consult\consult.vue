@@ -1,5 +1,5 @@
 <template>
-  <view class="demand">
+  <view class="demand"> 
     <view class="con-title">专家顾问一对一为您定制方案</view>
     <view class="con-serve">
       <span class="colorYellow">2000名</span>专业顾问已为
@@ -101,10 +101,10 @@ export default {
       }
       let obj = {
         type: '专业顾问', // 分类
-        proname: this.form.title, // 产品名称
-        name: '移动端客户', // 姓名
+        proname: '专家一对一咨询', // 产品名称
+        name: uni.getStorageSync('vipUserInfo').username || '前端提交客户', // 姓名
         phone: this.form.phone, // 电话
-        remarks: ''
+        remarks: this.form.title
       }
       this.$axios.post(this.$api.createIntegrate, obj).then(res => {
         if (res.code == 200) {
