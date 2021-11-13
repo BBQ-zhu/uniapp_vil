@@ -45,7 +45,7 @@ const download = (src, filName) => {
 const moneyFormat = (val, none = '') => {
     if (val === undefined || val === null || val === '') {
         return none
-    } else {
+    } else { 
         val = (val * 1).toFixed(2).toString()
         const reg = /(?=(\B\d{3})+$)/g
         if (val.indexOf('.') > -1) {
@@ -85,12 +85,12 @@ const agents = (arr) => {
             item.downtime = now.downtime
             agentsList.push(item)
         } else if (item.optertime == '月提示' && now.data >= 0) {
-            if (parseInt(arrTime[1]) + 1 == '13') {
+            if (parseInt(arrTime[1]) + 1 == 13) {
                 var year = parseInt(arrTime[0]) + 1
                 var month = 1
             } else {
                 var year = arrTime[0]
-                var month = parseInt(arrTime[1]) + 1
+                var month = parseInt(arrTime[1])
             }
             let monthData = year + '-' + month + '-' + itemTime[2]
             let mnow = getDistanceSpecifiedTime(monthData + ' 23:59:59')
@@ -127,7 +127,6 @@ const getDistanceSpecifiedTime = (dateTime) => {
     // var m = Math.floor(t / 1000 / 60 % 60);
     // var s = Math.floor(t / 1000 % 60);
     // var html = d + " 天" + h + " 时" + m + " 分" + s + " 秒";
-    // console.log(html);
 }
 
 const gottkefu = () => { //客服系统跳转
