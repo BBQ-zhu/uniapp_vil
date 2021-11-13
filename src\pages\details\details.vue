@@ -14,31 +14,27 @@
             ￥
             <span class="f18">{{ details.newprice }}</span>
           </view>
-          <view class="color3 ml20" style="text-decoration: line-through"
-            >￥{{ details.oldprice }}</view
-          >
+          <view class="color3 ml20" style="text-decoration: line-through">￥{{ details.oldprice }}</view>
         </view>
       </view>
       <u-line></u-line>
-      <view class="color3 mt20 textOver2" style="line-height: 20px">{{
+      <view class="color3 mt20 textOver2" style="line-height: 20px">
+        {{
         details.description
-      }}</view>
+        }}
+      </view>
       <view class="flex flexBetween mt20 mb20">
         <view>
-          <u-icon name="integral-fill" size="26" class="colorGreen mr5"></u-icon
-          >急速办理
+          <u-icon name="integral-fill" size="26" class="colorGreen mr5"></u-icon>急速办理
         </view>
         <view>
-          <u-icon name="integral-fill" size="26" class="colorGreen mr5"></u-icon
-          >专家服务
+          <u-icon name="integral-fill" size="26" class="colorGreen mr5"></u-icon>专家服务
         </view>
         <view>
-          <u-icon name="integral-fill" size="26" class="colorGreen mr5"></u-icon
-          >进度透明
+          <u-icon name="integral-fill" size="26" class="colorGreen mr5"></u-icon>进度透明
         </view>
         <view>
-          <u-icon name="integral-fill" size="26" class="colorGreen mr5"></u-icon
-          >全程监管
+          <u-icon name="integral-fill" size="26" class="colorGreen mr5"></u-icon>全程监管
         </view>
       </view>
       <u-line></u-line>
@@ -57,16 +53,110 @@
         </view>
       </view>
     </view>
+    <!-- 资质要求 -->
+    <span v-if="details.cation == 'true'">
+      <u-gap height="20" bg-color="#f1f2f6"></u-gap>
+      <view class="contant color2 ">
+        <view class="detailsText fw600 mb10 color1 f14">基本资料</view>
+        <view v-if="details.interest" class="ml5 mb10">
+          <u-icon name="star" class="colorGreen mr5 "></u-icon>月利息:
+          <span class="colorYellow fw600 ml5">{{details.interest}}%</span>
+        </view>
+        <view v-if="details.minamount || details.maxamount" class="ml5 mb10">
+          <u-icon name="star" class="colorGreen mr5"></u-icon>最低额度:
+          <span class="colorYellow fw600 ml5">{{details.minamount || 0}}万</span>
+          — 最高额度:
+          <span class="colorYellow fw600 ml5">{{details.maxamount || 0}}万</span>
+        </view>
+        <view v-if="details.minterm || details.maxterm" class="ml5 ">
+          <u-icon name="star" class="colorGreen mr5"></u-icon>最低期限:
+          <span class="colorYellow fw600 ml5">{{details.minterm}}月</span>
+          — 最高期限:
+          <span class="colorYellow fw600 ml5">{{details.maxterm}}月</span>
+        </view>
+      </view>
+      <u-gap height="20" bg-color="#f1f2f6"></u-gap>
+      <view class="contant color2 ">
+        <view class="detailsText fw600 mb10 color1 f14">资质要求
+         <span v-if="details.key" class="colorGreen ml5">({{details.key.replace('选中的','以下要求')}})</span>
+        </view>
+        <view v-if="details.age && details.match.includes('age')" class=" borderBom">
+         <u-icon name="tags" class="colorGreen mr5"></u-icon>年龄不超过：
+          <span class="colorYellow fw600 ml5" style="flex:1">{{details.age}}岁</span>
+        </view>
+        <view v-if="details.revenue && details.match.includes('revenue')" class=" borderBom">
+          <u-icon name="tags" class="colorGreen mr5"></u-icon>月收入不低于：
+          <span class="colorYellow fw600 ml5">{{details.revenue}}元</span>
+        </view>
+        <view v-if="details.address && details.match.includes('address')" class=" borderBom">
+          <u-icon name="tags" class="colorGreen mr5"></u-icon>所在城市：
+          <span class="colorYellow fw600 ml5">{{details.address[0]}}-{{details.address[1]}}</span>
+        </view>
+        <view v-if="details.social.length && details.match.includes('social')" class="borderBom">
+          <view><u-icon name="tags" class="colorGreen mr5"></u-icon>社保(满足以下任意一项)：</view>
+          <view class="colorYellow fw600 ml20 mt3">{{details.social.join('、')}}</view>
+        </view>
+        <view v-if="details.provident.length && details.match.includes('provident')" class="borderBom">
+          <view><u-icon name="tags" class="colorGreen mr5"></u-icon>公积金(满足以下任意一项)：</view>
+          <view class="colorYellow fw600 ml20 mt3">{{details.provident.join('、')}}</view>
+        </view>
+        <view v-if="details.houses.length && details.match.includes('houses')" class="borderBom">
+          <view><u-icon name="tags" class="colorGreen mr5"></u-icon>房屋(满足以下任意一项)：</view>
+          <view class="colorYellow fw600 ml20 mt3">{{details.houses.join('、')}}</view>
+        </view>
+        <view v-if="details.car.length && details.match.includes('car')" class="borderBom">
+          <view><u-icon name="tags" class="colorGreen mr5"></u-icon>车辆(满足以下任意一项)：</view>
+          <view class="colorYellow fw600 ml20 mt3">{{details.car.join('、')}}</view>
+        </view>
+        <view v-if="details.policy.length && details.match.includes('policy')" class="borderBom">
+          <view><u-icon name="tags" class="colorGreen mr5"></u-icon>商业险(满足以下任意一项)：</view>
+          <view class="colorYellow fw600 ml20 mt3">{{details.policy.join('、')}}</view>
+        </view>
+        <view v-if="details.sesame.length && details.match.includes('sesame')" class="borderBom">
+          <view><u-icon name="tags" class="colorGreen mr5"></u-icon>芝麻分(满足以下任意一项)：</view>
+          <view class="colorYellow fw600 ml20 mt3">{{details.sesame.join('、')}}</view>
+        </view>
+        <view v-if="details.microcredit.length && details.match.includes('microcredit')" class="borderBom">
+          <view><u-icon name="tags" class="colorGreen mr5"></u-icon>微粒贷(满足以下任意一项)：</view>
+          <view class="colorYellow fw600 ml20 mt3">{{details.microcredit.join('、')}}</view>
+        </view>
+        <view v-if="details.credit.length && details.match.includes('credit')" class="borderBom">
+          <view><u-icon name="tags" class="colorGreen mr5"></u-icon>信用卡(满足以下任意一项)：</view>
+          <view class="colorYellow fw600 ml20 mt3">{{details.credit.join('、')}}</view>
+        </view>
+        <view v-if="details.tobacco.length && details.match.includes('tobacco')" class="borderBom">
+          <view><u-icon name="tags" class="colorGreen mr5"></u-icon>烟草证(满足以下任意一项)：</view>
+          <view class="colorYellow fw600 ml20 mt3">{{details.tobacco.join('、')}}</view>
+        </view>
+        <view v-if="details.enterprise.length && details.match.includes('enterprise')" class="borderBom">
+          <view><u-icon name="tags" class="colorGreen mr5"></u-icon>企业税贷(满足以下任意一项)：</view>
+          <view class="colorYellow fw600 ml20 mt3">{{details.enterprise.join('、')}}</view>
+        </view>
+        <view v-if="details.ticket.length && details.match.includes('ticket')" class="borderBom">
+          <view><u-icon name="tags" class="colorGreen mr5"></u-icon>企业票贷(满足以下任意一项)：</view>
+          <view class="colorYellow fw600 ml20 mt3">{{details.ticket.join('、')}}</view>
+        </view>
+        <view v-if="details.othercomponents.length" class="borderBom">
+          <view><u-icon name="tags" class="colorGreen mr5"></u-icon>其他要求：</view>
+          <view class="colorYellow fw600 ml20 mt3">{{details.othercomponents.join('、')}}</view>
+        </view>
+      </view>
+      <u-gap height="20" bg-color="#f1f2f6"></u-gap>
+      <view class="contant color2 ">
+        <view class="detailsText fw600 mb10 color1 f14">办理所需资料</view>
+        <view >
+        <u-tag v-for="item in details.demand" :key="item" :text="item" mode="light" type="success" class="mr5 mb5"></u-tag>
+        </view>
+        <view v-if="details.otherinformation" class="ml5  mt5" style="line-height: 20px;">
+          <view><u-icon name="bell" class="colorGreen mr5"></u-icon>其他资料:</view>
+          <view class="colorYellow fw600 ml20">{{details.otherinformation}}</view>
+        </view>
+      </view>
+    </span>
     <u-gap height="20" bg-color="#f1f2f6"></u-gap>
     <view class="contant">
       <view class="detailsText fw600 mb10">服务详情</view>
-      <!-- <view class="details mt15" v-html="details.details"></view> -->
-      <u-parse
-        :html="details.details"
-        :domain="$URL"
-        :lazy-load="true"
-        :show-with-animation="true"
-      ></u-parse>
+      <u-parse :html="details.details" :domain="$URL" :lazy-load="true" :show-with-animation="true"></u-parse>
     </view>
     <u-gap height="20" bg-color="#f1f2f6"></u-gap>
     <consultant class="mt15"></consultant>
@@ -81,102 +171,119 @@
         hover-class="none"
         type="primary"
         class="action-btn no-border buy-now-btn"
-        >在线咨询</u-button
-      >
+      >在线咨询</u-button>
 
       <u-button
         hover-class="none"
         type="primary"
         class="action-btn no-border add-cart-btn"
         @click="handling"
-        >立即办理</u-button
-      >
+      >立即办理</u-button>
     </view>
   </view>
 </template> 
 
 <script>
+import fixedInfo from '../../common/js/fixedInfo.js'
 export default {
   data() {
     return {
-      details: {},
-    };
+      fixedInfo:fixedInfo,
+      details: {}
+    }
   },
   onLoad(option) {
-    this.searchChange(option.name);
+    this.searchChange(option.name)
   },
   methods: {
     //立即办理
     handling() {
       var finData = {
         skip: 0,
-        limit: 9999, 
-        fuzz: "phone",
-        input: uni.getStorageSync('vipUserInfo').phone,
-      };
-      this.$axios.post(this.$api.findAgent, finData).then((res) => {
-        let arr = res.data[0].data;
+        limit: 9999,
+        fuzz: 'phone',
+        input: uni.getStorageSync('vipUserInfo').phone
+      }
+      this.$axios.post(this.$api.findAgent, finData).then(res => {
+        let arr = res.data[0].data
         if (arr.length == 0) {
-          this.createAgent();
+          this.createAgent()
         } else {
-          let key = true;
-          arr.map((item) => {
-            if (this.details._id == item.proid && item.read == "false") {
+          let key = true
+          arr.map(item => {
+            if (this.details._id == item.proid && item.read == 'false') {
               uni.showToast({
-                title: "您的该服务正在处理中",
-                icon: "none",
-              });
-              key = false;
+                title: '您的该服务正在处理中',
+                icon: 'none'
+              })
+              key = false
             }
-          });
-          if (key) { 
-            this.createAgent();
+          })
+          if (key) {
+            this.createAgent()
           }
         }
-      });
+      })
     },
     createAgent() {
-      let data = {
-        proid: this.details._id,
-        type: this.details.type + "-" + this.details.name, // 数据来源
-        name: uni.getStorageSync('vipUserInfo').username, // 客户名称
+      let obj = {
+        type: this.details.type, // 咨询类型
+        proname: this.details.name, // 咨询产品
+        name: uni.getStorageSync('vipUserInfo').username, // 姓名
         phone: uni.getStorageSync('vipUserInfo').phone, // 电话
-        submitby: uni.getStorageSync('vipUserInfo').username, // 提交人
-        handler: "all", // 处理人
-        path: "/Integrate", // 跳转至综合服务
-        read: "false", // 是否已处理
-      };
-      this.$axios.post(this.$api.createAgent, data).then((res) => {
+        remarks: ''
+      }
+      this.$axios.post(this.$api.createIntegrate, obj).then(res => {
         if (res.code == 200) {
-          uni.showToast({
-            title: "业务经理稍后为您服务",
-            icon: "none",
-            duration: 3000,
-          });
+          //创建日志
+          let data = {
+            proid: this.details._id,
+            type: this.details.type + '-' + this.details.name, // 数据来源
+            name: uni.getStorageSync('vipUserInfo').username, // 客户名称
+            phone: uni.getStorageSync('vipUserInfo').phone, // 电话
+            submitby: uni.getStorageSync('vipUserInfo').username, // 提交人
+            handler: 'all', // 处理人
+            path: '/Integrate', // 跳转至综合服务
+            read: 'false' // 是否已处理
+          }
+          this.$axios.post(this.$api.createAgent, data).then(res => {
+            if (res.code == 200) {
+              uni.showToast({
+                title: '业务经理稍后为您服务',
+                icon: 'none',
+                duration: 3000
+              })
+            }
+          })
         }
-      });
+      })
     },
     async searchChange(name) {
       var data = {
         skip: 0,
         limit: 10,
-        fuzz: "name",
-        input: name,
-      };
-      await this.$axios.post(this.$api.findProduct, data).then((res) => {
-        this.details = res.data[0].data[0];
-      });
+        fuzz: 'name',
+        input: name
+      }
+      await this.$axios.post(this.$api.findProduct, data).then(res => {
+        this.details = res.data[0].data[0]
+      })
     },
     back() {
       uni.navigateBack({
-        delta: 1,
-      });
-    },
-  },
-};
+        delta: 1
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
+.borderBom{
+  line-height: 20px;
+  padding:8px 0;
+  border-bottom:1px solid rgb(230, 260, 237);
+}
 .action-btn-group {
   display: flex;
   height: 76upx;
@@ -187,7 +294,7 @@ export default {
   background: linear-gradient(to right, #46e3c4, #3cc8c9, #46e3c4);
   position: relative;
   &:after {
-    content: "";
+    content: '';
     position: absolute;
     top: 50%;
     right: 50%;
