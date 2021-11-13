@@ -104,10 +104,10 @@ export default {
       }
       let obj = {
         type: "商务合作", // 分类
-        proname: this.form.title, // 产品名称
-        name: "移动端客户", // 姓名
+        proname: '商务合作', // 产品名称
+        name: uni.getStorageSync('vipUserInfo').username || '前端提交客户', // 姓名
         phone: this.form.phone, // 电话
-        remarks: "",
+        remarks: this.form.title,
       };
       this.$axios.post(this.$api.createIntegrate, obj).then((res) => {
         if (res.code == 200) {
