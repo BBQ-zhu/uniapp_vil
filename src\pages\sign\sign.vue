@@ -35,9 +35,8 @@
       <view class="back" @click="showContrat = true">
         <u-icon name="arrow-left"></u-icon>
       </view>
-      <u-loading :show="loadingShow" size="60" color="#11BBB8" mode="circle" style="position:fixed;top:50%;left:45%"></u-loading>
+      <u-loading :show="loadingShow" size="80" color="#11BBB8" mode="circle" style="position:fixed;top:50%;left:45%"></u-loading>
       <view id="poster" class="u-content">
-        <jm-watermark></jm-watermark>
         <view v-html="contractDetails.remarks"></view>
         <view class="mt10 signBox poRelative">
           客户签名：
@@ -55,7 +54,7 @@
           ></u-image>
         </view>
         <view class="poRelative">
-          <view class="mt10 signBox">公司盖章：铸力金融服务外包有限公司</view>
+          <view class="mt10 signBox">公司盖章：四川铸力金融服务外包有限公司</view>
           <u-image
             :src="'/static/imgs/stamped.png'"
             width="220rpx"
@@ -64,7 +63,7 @@
             style="position: absolute; top: 0; left: 190rpx; opacity: 0.8"
           ></u-image>
         </view>
-        <view class="mt20 mb10">签约时间：{{ contractDetails.time }}</view>
+        <view class="mt20 mb20">签约时间：{{ contractDetails.time }}</view>
       </view>
     </view>
   </view>
@@ -146,7 +145,7 @@ export default {
           logging: true,
           useCORS: true,
         });
-        this.contractImg = canvas.toDataURL("image/jpeg", 1); //base64文件 1为质量
+        this.contractImg = canvas.toDataURL("image/jpeg", 0.3); //base64文件 1为质量
         await uni.uploadFile({
           url: this.$api.uploadPhoneContractImg,
           // filePath: "w",
