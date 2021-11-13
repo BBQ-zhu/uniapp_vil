@@ -14,8 +14,8 @@
             <view class="line" style="margin-top: 4px">关于</view>
           </u-link>
         </view>
-        <view @click="toAgents">
-          <!-- <u-badge type="error" size="mini" :count="agentsList.length"></u-badge> -->
+        <view @click="toAgents" style="position:relative;">
+          <u-badge type="error" size="mini" :count="agentsList.length" style="position:absolute;top:-8px;right:-4px;"></u-badge>
           <u-icon name="chat" size="40"></u-icon>
         </view>
       </view>
@@ -48,7 +48,7 @@
       <school class="mt15"></school>
     </view>
     <!-- 咨询顾问 -->
-    <consultant class="mt15"></consultant>
+    <consultant class="mt5"></consultant>
     <!-- 推荐服务 -->
     <recommend
       class="mt10"
@@ -86,7 +86,7 @@ export default {
       },
       //推荐服务
       recomList: [],
-      loadStatus: "loadmore", //loadmore 加载前, loading 加载中, momore 没有数据了
+      loadStatus: "loadmore", //loadmore 加载前, loading 加载中, nomore 没有数据了
     };
   },
   onLoad() {
