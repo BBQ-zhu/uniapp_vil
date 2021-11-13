@@ -20,11 +20,15 @@
 	},{
 		"path": "pages/internal/internal"
 	},{
+		"path": "pages/internalDetail/internalDetail"
+	},{
 		"path": "pages/login/login"
 	},{
 		"path": "pages/register/register"
 	},{
 		"path": "pages/loan/loan"
+	},{
+		"path": "pages/loanList/loanList" 
 	},{
 		"path": "pages/enterprise/enterprise"
 	},{
@@ -72,32 +76,32 @@
 		"list":[{
 			"pagePath":"pages/index/index",
 			"text":"首页",
-			"iconPath":"static/icons/1.PNG",
-			"selectedIconPath":"static/icons/1.PNG"
+			"iconPath":"static/icons/home.png",
+			"selectedIconPath":"static/icons/home1.png"
 		},
 		{
 			"pagePath":"pages/class/class",
 			"text":"分类",
-			"iconPath":"static/icons/2.PNG",
-			"selectedIconPath":"static/icons/1.PNG"
+			"iconPath":"static/icons/class.png",
+			"selectedIconPath":"static/icons/class1.png"
 		},
 		{
 			"pagePath":"pages/shop/shop",
 			"text":"商城",
-			"iconPath":"static/icons/3.PNG",
-			"selectedIconPath":"static/icons/1.PNG"
+			"iconPath":"static/icons/shop.png",
+			"selectedIconPath":"static/icons/shop1.png"
 		},
 		{
 			"pagePath":"pages/user/user",
 			"text":"我的",
-			"iconPath":"static/icons/4.PNG",
-			"selectedIconPath":"static/icons/1.PNG"
+			"iconPath":"static/icons/user.png",
+			"selectedIconPath":"static/icons/user1.png"
 		}],
 		"midButton":{
 			"width":"45px",
 			"height":"41px",
 			"iconWidth":"35px",
-			"iconPath":"static/icons/5.PNG"
+			"iconPath":"static/icons/phone.png"
 		}
 	},
 	"easycom": {
