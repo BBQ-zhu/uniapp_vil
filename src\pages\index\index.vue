@@ -2,7 +2,9 @@
   <view class="page" style="height: calc(100vh + 10px)">
     <view class="container">
       <view class="flexBetween" style="line-height: 21px">
-        <view> <u-icon name="map-fill" size="28"></u-icon>绵阳 </view>
+        <view>
+          <u-icon name="map-fill" size="28"></u-icon>绵阳
+        </view>
         <view class="flexCenter center">
           <view>
             服务
@@ -14,8 +16,13 @@
             <view class="line" style="margin-top: 4px">关于</view>
           </u-link>
         </view>
-        <view @click="toAgents" style="position:relative;">
-          <u-badge type="error" size="mini" :count="agentsList.length" style="position:absolute;top:-8px;right:-4px;"></u-badge>
+        <view @click="toAgents" style="position: relative">
+          <u-badge
+            type="error"
+            size="mini"
+            :count="agentsList.length"
+            style="position: absolute; top: -8px; right: -4px"
+          ></u-badge>
           <u-icon name="chat" size="40"></u-icon>
         </view>
       </view>
@@ -50,12 +57,7 @@
     <!-- 咨询顾问 -->
     <consultant class="mt5"></consultant>
     <!-- 推荐服务 -->
-    <recommend
-      class="mt10"
-      :name="'推荐服务'"
-      :recomList="recomList"
-      :status="loadStatus"
-    ></recommend>
+    <recommend class="mt10" :name="'推荐服务'" :recomList="recomList" :status="loadStatus"></recommend>
   </view>
 </template>
 
@@ -63,45 +65,61 @@
 export default {
   data() {
     return {
-      agentsList: "", //代办数量
+      agentsList: '', //代办数量
       //轮播图
       swiperList: [],
       //导航图标
       navList: [],
       //滚动通知
       notList: [
-        "绵阳用户 135****0896 刚交易了 商标注册",
-        "绵阳用户 180****6872 刚交易了 银行开户",
-        "绵阳用户 137****1709 刚交易了 代理记账",
-        "绵阳用户 153****3634 刚交易了 贷款服务",
-        "绵阳用户 189****9938 刚交易了 资质认证",
-        "绵阳用户 158****5264 刚交易了 抵押贷款",
-        "绵阳用户 138****6056 刚交易了 专家顾问",
-        "绵阳用户 150****5526 刚交易了 法律服务",
-        "绵阳用户 138****8967 刚交易了 专利注册",
+        '绵阳用户 135****0896 刚交易了 商标注册',
+        '绵阳用户 180****6872 刚交易了 银行开户',
+        '绵阳用户 137****1709 刚交易了 代理记账',
+        '绵阳用户 153****3634 刚交易了 贷款服务',
+        '绵阳用户 189****9938 刚交易了 资质认证',
+        '绵阳用户 158****5264 刚交易了 抵押贷款',
+        '绵阳用户 138****6056 刚交易了 专家顾问',
+        '绵阳用户 150****5526 刚交易了 法律服务',
+        '绵阳用户 138****8967 刚交易了 专利注册'
       ],
       find: {
         currentPage: 1, //当前页码
-        limit: 10, //每一页的数量
+        limit: 10 //每一页的数量
       },
       //推荐服务
       recomList: [],
-      loadStatus: "loadmore", //loadmore 加载前, loading 加载中, nomore 没有数据了
-    };
+      loadStatus: 'loadmore' //loadmore 加载前, loading 加载中, nomore 没有数据了
+    }
   },
   onLoad() {
-    this.scroImgList(); //获取轮播图
-    this.searchChange(); //推荐产品
-    this.findNavList(); //查询导航
-    if (uni.getStorageSync("vipUserInfo")) {
-      this.myCont(); //代办数量
+    //判断是移动端还是PC端，并做跳转
+    var ua = window.navigator.userAgent.toLowerCase()
+    if (
+      !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      )
+    ) {
+      // PC端
+      window.location.href = 'zlb.zhulif.com'
+      console.log('PC端')
+      // window.location.href = 'http://localhost:8082/#/'
+    } else if (ua.indexOf('iphone') > 0 || ua.indexOf('android') > 0) {
+      // 移动端
+      console.log('移动端')
+    }
+
+    this.scroImgList() //获取轮播图
+    this.searchChange() //推荐产品
+    this.findNavList() //查询导航
+    if (uni.getStorageSync('vipUserInfo')) {
+      this.myCont() //代办数量
     }
   },
   onReachBottom() {
     // 监听上拉加载
     // 监听上拉加载
-    this.loadStatus = "loading";
-    this.searchChange();
+    this.loadStatus = 'loading'
+    this.searchChange()
   },
   methods: {
     myCont() {
@@ -109,98 +127,98 @@ export default {
       var data = {
         skip: 0,
         limit: 999,
-        fuzz: "phone",
-        input: (uni.getStorageSync("vipUserInfo") || {}).phone,
-      };
-      this.$axios.post(this.$api.findContract, data).then((res) => {
+        fuzz: 'phone',
+        input: (uni.getStorageSync('vipUserInfo') || {}).phone
+      }
+      this.$axios.post(this.$api.findContract, data).then(res => {
         if (
           res.code == 200 &&
           res.data.length > 0 &&
           res.data[0].data.length > 0
         ) {
-          this.agentsList = this.$commonJS.agents(res.data[0].data);
+          this.agentsList = this.$commonJS.agents(res.data[0].data)
         }
-      });
+      })
     },
     toAgents() {
       //跳转至我的代办
       if (this.agentsList.length > 0) {
         uni.navigateTo({
           url:
-            "/pages/agents/agents?data=" +
-            encodeURIComponent(JSON.stringify(this.agentsList)),
-        });
+            '/pages/agents/agents?data=' +
+            encodeURIComponent(JSON.stringify(this.agentsList))
+        })
       }
     },
     // 获取导航列表
     async findNavList() {
-      await this.$axios.post(this.$api.findProductClass).then((res) => {
-        this.navList = [];
-        let arr = res.data;
+      await this.$axios.post(this.$api.findProductClass).then(res => {
+        this.navList = []
+        let arr = res.data
         let isTrue = []
-        arr.map((item) => {
-          if (item.super == "是") {
-            var obj = { image: "", title: "", path: "",number:''};
-            obj.image = item.imgurl;
-            obj.title = item.name;
-            obj.path = item.name;
-            obj.number = item.number;
-            isTrue.push(obj);
+        arr.map(item => {
+          if (item.super == '是') {
+            var obj = { image: '', title: '', path: '', number: '' }
+            obj.image = item.imgurl
+            obj.title = item.name
+            obj.path = item.name
+            obj.number = item.number
+            isTrue.push(obj)
           }
-        });
-        this.navList = this.$commonJS.bubbleSort(isTrue,'number')
-      });
+        })
+        this.navList = this.$commonJS.bubbleSort(isTrue, 'number')
+      })
     },
     // 轮播图
     async scroImgList() {
-      await this.$axios.post(this.$api.findScrollImg).then((res) => {
-        this.swiperList = [];
-        let arr = res.data;
-        arr.map((item) => {
-          if (item.typeid == "mobScroll") {
-            var obj = { image: "", path: "" };
-            obj.image = item.scroimg;
-            obj.path = item.link;
-            this.swiperList.push(obj);
+      await this.$axios.post(this.$api.findScrollImg).then(res => {
+        this.swiperList = []
+        let arr = res.data
+        arr.map(item => {
+          if (item.typeid == 'mobScroll') {
+            var obj = { image: '', path: '' }
+            obj.image = item.scroimg
+            obj.path = item.link
+            this.swiperList.push(obj)
           }
-        });
-      });
+        })
+      })
     },
     //查询产品列表
     async searchChange() {
       var data = {
         skip: this.find.limit * (this.find.currentPage - 1),
         limit: this.find.limit,
-        fuzz: "recommend",
-        input: "推荐",
-      };
-      await this.$axios.post(this.$api.findProduct, data).then((res) => {
-        let arr = res.data[0].data;
+        fuzz: 'recommend',
+        input: '推荐'
+      }
+      await this.$axios.post(this.$api.findProduct, data).then(res => {
+        let arr = res.data[0].data
         if (arr.length == 0) {
-          this.loadStatus = "momore";
+          this.loadStatus = 'momore'
         } else {
-          this.loadStatus = "loadmore";
-          this.find.currentPage++;
-          this.recomList = this.recomList.concat(arr);
+          this.loadStatus = 'loadmore'
+          this.find.currentPage++
+          this.recomList = this.recomList.concat(arr)
         }
-      });
+      })
     },
     //轮播图跳转
     swiperChange(e) {
       if (this.swiperList[e].path) {
         uni.navigateTo({
-          url: "/pages/details/details?name=" + this.swiperList[e].path,
-        });
+          url: '/pages/details/details?name=' + this.swiperList[e].path
+        })
       }
     },
     findProdect(name) {
       // encodeURIComponent(JSON.stringify(res.data))
       uni.navigateTo({
-        url: "/pages/findProdect/findProdect?name=" + name + "&fuzz=" + "name",
-      });
-    },
-  },
-};
+        url: '/pages/findProdect/findProdect?name=' + name + '&fuzz=' + 'name'
+      })
+    }
+  }
+}
 </script>
 
 <style lang='scss' scoped>
