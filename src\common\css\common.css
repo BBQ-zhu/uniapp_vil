@@ -103,9 +103,11 @@
 .ml20 {
     margin-left: 20px;
 }
-.mb5{
+
+.mb5 {
     margin-bottom: 5px;
 }
+
 .mb10 {
     margin-bottom: 10px;
 }
@@ -146,7 +148,7 @@
     color: #8699ad;
 }
 
-.colorGreen { 
+.colorGreen {
     color: #11BBB8;
 }
 
@@ -165,7 +167,9 @@
 .colorjin {
     color: #f7d680;
 }
-
+.bgColorfff {
+    background-color: #fff;
+}
 .bgColor {
     background-color: #2b3a4a;
 }
@@ -203,7 +207,7 @@
 }
 
 .flex {
-    display: flex;
+    display: flex; 
     flex-wrap: wrap;
 }
 
@@ -224,7 +228,7 @@
     justify-content: space-around;
     flex-wrap: wrap;
 }
- 
+
 .flexStart {
     display: flex;
     justify-content: flex-start;
