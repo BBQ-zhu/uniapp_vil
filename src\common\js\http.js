@@ -12,7 +12,7 @@ if (process.env.NODE_ENV == 'development') {
 }
 
 //设置请求超时时间
-axios.defaults.timeout = 30000;
+axios.defaults.timeout = 180000; //三分钟超时
 
 //给post设置请求头
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
