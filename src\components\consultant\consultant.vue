@@ -34,10 +34,10 @@
         </view>
         <view class="flexCenter mb10">
           <view class="reBtn lineBtn" @click="$commonJS.gottkefu"
-            >在线咨询</view
+            >服务热线</view
           >
           <view class="reBtn yellowBtn ml10" @click="call(item.phone)"
-            >电话咨询</view
+            >咨询顾问</view
           >
         </view>
       </view>
