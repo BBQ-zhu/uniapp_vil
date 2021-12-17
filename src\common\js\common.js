@@ -12,13 +12,13 @@ const clone = (obj) => {
 }
 
 //冒泡排序：arr为数组对象，name为对象中需要排序的属性
-function bubbleSort(arr,name) {
+function bubbleSort (arr, name) {
     var len = arr.length;
     for (var i = 0; i < len - 1; i++) {
         for (var j = 0; j < len - 1 - i; j++) {
-            if (parseInt(arr[j][name]) > parseInt(arr[j+1][name])) { // 相邻元素两两对比
-                var temp = arr[j+1]; // 元素交换
-                arr[j+1] = arr[j];
+            if (parseInt(arr[j][name]) > parseInt(arr[j + 1][name])) { // 相邻元素两两对比
+                var temp = arr[j + 1]; // 元素交换
+                arr[j + 1] = arr[j];
                 arr[j] = temp;
             }
         }
@@ -45,7 +45,7 @@ const download = (src, filName) => {
 const moneyFormat = (val, none = '') => {
     if (val === undefined || val === null || val === '') {
         return none
-    } else { 
+    } else {
         val = (val * 1).toFixed(2).toString()
         const reg = /(?=(\B\d{3})+$)/g
         if (val.indexOf('.') > -1) {
@@ -76,7 +76,7 @@ const agents = (arr) => {
         if (
             item.optertime == '年提示' &&
             now.data >= 0 &&
-            now.data <= item.tipstime
+            now.data <= parseInt(item.tipstime)
         ) {
             //item.tipstime 15为提前15天提醒年缴费
             item['title'] =
@@ -85,16 +85,11 @@ const agents = (arr) => {
             item.downtime = now.downtime
             agentsList.push(item)
         } else if (item.optertime == '月提示' && now.data >= 0) {
-            if (parseInt(arrTime[1]) + 1 == 13) {
-                var year = parseInt(arrTime[0]) + 1
-                var month = 1
-            } else {
-                var year = arrTime[0]
-                var month = parseInt(arrTime[1])
-            }
+            var year = arrTime[0]
+            var month = parseInt(arrTime[1])
             let monthData = year + '-' + month + '-' + itemTime[2]
             let mnow = getDistanceSpecifiedTime(monthData + ' 23:59:59')
-            if (mnow.data <= item.tipstime) {
+            if (mnow.data <= parseInt(item.tipstime)) {
                 item['title'] =
                     '您的-' +
                     item.type +
@@ -105,7 +100,7 @@ const agents = (arr) => {
                 item.downtime = mnow.downtime
                 agentsList.push(item)
             }
-        } else if (item.optertime == '不提示') {}
+        } else if (item.optertime == '不提示') { }
     })
     return agentsList
 }
@@ -130,10 +125,14 @@ const getDistanceSpecifiedTime = (dateTime) => {
 }
 
 const gottkefu = () => { //客服系统跳转
-    var a = document.createElement("a");
-    a.setAttribute("href", "https://w101.ttkefu.com/k/linkurl/?t=3B1IJD5");
-    // a.setAttribute("target", "_blank");
+    var a = document.createElement('a');
+    a.setAttribute('href', 'tel:4001109939');
+    document.body.appendChild(a);
     a.click();
+    // var a = document.createElement("a");
+    // a.setAttribute("href", "https://w101.ttkefu.com/k/linkurl/?t=3B1IJD5");
+    // // a.setAttribute("target", "_blank");
+    // a.click();
 }
 
 module.exports = {
