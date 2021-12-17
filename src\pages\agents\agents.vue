@@ -5,11 +5,13 @@
       back-icon-color="#fff"
       title="我的代办"
       title-color="#fff"
-      :background="{backgroundImage:'linear-gradient(to right bottom,#45b2fd,#2979ff)'}"
+      :background="{
+        backgroundImage: 'linear-gradient(to right bottom,#45b2fd,#2979ff)',
+      }"
     ></u-navbar>
     <view class="content">
       <u-card
-        v-for="(item,index) in agentsList"
+        v-for="(item, index) in agentsList"
         :key="index"
         :title="item.type"
         :sub-title="item.optertime"
@@ -17,11 +19,15 @@
       >
         <view class slot="body">
           <view class="flexBetween mb10 color2">
-            <view>{{item.name}}</view>
-            <view>{{item.phone}}</view>
+            <view>{{ item.name }}</view>
+            <view>{{ item.phone }}</view>
           </view>
           <view class="u-body-item u-flex u-col-between u-p-t-0">
-            <view class="u-body-item-title">{{item.title}}</view>
+            <view class="u-body-item-title">{{ item.title }}</view>
+          </view>
+          <view v-if="item.type=='抵押贷款'" class="flexBetween mb10 mt10 color2">
+            <view>金融客服：{{item.manager2}}</view>
+            <view>{{item.status}}</view>
           </view>
         </view>
         <view slot="foot">
