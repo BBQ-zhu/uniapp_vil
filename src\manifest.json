@@ -1,5 +1,5 @@
 {
-	"name": "uview-zl",
+	"name": "铸力企服",
 	"appid": "",
 	"description": "",
 	"versionName": "1.0.0",
@@ -57,15 +57,16 @@
 					// }
 				},
 				"/upload/ueditor": { // 富文本图片访问
-					"target": "http://localhost:3030", 
+					"target": "http://localhost:3030",
 					"changeOrigin": true,
 					"secure": false
 				},
 				"/uploads": { // 富文本图片访问
-					"target": "http://localhost:3030", 
+					"target": "http://localhost:3030",
 					"changeOrigin": true,
 					"secure": false
 				}
+				
 			}
 		}
 		// "router": {
