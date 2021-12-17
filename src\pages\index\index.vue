@@ -11,7 +11,7 @@
             <view class="serve"></view>
           </view>
           <navigator url="/pages/news/news">新闻</navigator>
-
+          <navigator url="/pages/joinUs/joinUs">招聘</navigator>
           <u-link href="http://zhulif.com/company/index.html">
             <view class="line" style="margin-top: 4px">关于</view>
           </u-link>
@@ -34,8 +34,8 @@
         <view class="serveBtn" @click="findProdect('工商注册')">工商注册</view>
         <view class="serveBtn" @click="findProdect('商标')">商标</view>
         <view class="serveBtn" @click="findProdect('代理记账')">代理记账</view>
-        <view class="serveBtn" @click="findProdect('法律')">法律</view>
-        <view class="serveBtn" @click="findProdect('注销')">注销</view>
+        <view class="serveBtn" @click="findProdect('法律')">贷款</view>
+        <view class="serveBtn" @click="findProdect('注销')">融资</view>
       </view>
       <view class="wrap mt15">
         <!-- 轮播图 -->
@@ -58,6 +58,9 @@
     <consultant class="mt5"></consultant>
     <!-- 推荐服务 -->
     <recommend class="mt10" :name="'推荐服务'" :recomList="recomList" :status="loadStatus"></recommend>
+    <view class="conCenter u-text-center">
+      <u-link href="https://beian.miit.gov.cn/" class="beian">备案号：蜀ICP备20004812号-1</u-link>
+    </view>
   </view>
 </template>
 
@@ -91,7 +94,7 @@ export default {
       loadStatus: 'loadmore' //loadmore 加载前, loading 加载中, nomore 没有数据了
     }
   },
-  onLoad() {
+  async onLoad() {
     //判断是移动端还是PC端，并做跳转
     var ua = window.navigator.userAgent.toLowerCase()
     if (
@@ -102,31 +105,53 @@ export default {
       // PC端
       console.log('PC端')
       // window.location.href = 'zlb.zhulif.com'
-      window.location.href = 'http://localhost:8082/#/'
+      window.location.href = 'http://localhost:8080/#/'
     } else if (ua.indexOf('iphone') > 0 || ua.indexOf('android') > 0) {
       // 移动端
       console.log('移动端')
     }
-
+    this.statistics()//统计浏览量
     this.scroImgList() //获取轮播图
-    this.searchChange() //推荐产品
+    await this.searchChange() //推荐产品
     this.findNavList() //查询导航
     if (uni.getStorageSync('vipUserInfo')) {
       this.myCont() //代办数量
     }
   },
-  onReachBottom() {
-    // 监听上拉加载
+  async onReachBottom() {
+    // console.log('触底刷新')
     // 监听上拉加载
     this.loadStatus = 'loading'
-    this.searchChange()
+    this.find.currentPage++
+    await this.searchChange()
   },
   methods: {
+    //统计浏览量
+    statistics(){
+      let year = (new Date()).getFullYear()
+      var data = {year:year}
+      this.$axios.post(this.$api.findStatistics, data).then(res => {
+        if (
+          res.code == 200 && res.data.length > 0 
+        ) {
+          let obj = res.data[0]
+          let month = (new Date()).getMonth()
+          obj.monthlist[month] = parseInt(obj.monthlist[month]) + 1 
+          this.$axios.post(this.$api.updateStatistics, obj)
+        }else if(res.code == 200 && res.data.length == 0){
+          let newData = {
+            year:year,
+            monthlist:[0,0,0,0,0,0,0,0,0,0,0,0]
+          }
+          this.$axios.post(this.$api.createStatistics, newData)
+        }
+      })
+    },
     myCont() {
       //我的代办数量
       var data = {
         skip: 0,
-        limit: 999,
+        limit: 9999,
         fuzz: 'phone',
         input: (uni.getStorageSync('vipUserInfo') || {}).phone
       }
@@ -190,16 +215,20 @@ export default {
         skip: this.find.limit * (this.find.currentPage - 1),
         limit: this.find.limit,
         fuzz: 'recommend',
-        input: '推荐'
+        input: '是'
       }
       await this.$axios.post(this.$api.findProduct, data).then(res => {
-        let arr = res.data[0].data
-        if (arr.length == 0) {
-          this.loadStatus = 'momore'
+        if (res.code == 200) {
+          let arr = res.data[0].data
+          if (arr.length == 0) {
+            this.loadStatus = 'momore'
+            this.find.currentPage--
+          } else {
+            this.loadStatus = 'loadmore'
+            this.recomList = this.recomList.concat(arr)
+          }
         } else {
-          this.loadStatus = 'loadmore'
-          this.find.currentPage++
-          this.recomList = this.recomList.concat(arr)
+          this.find.currentPage--
         }
       })
     },
@@ -222,6 +251,10 @@ export default {
 </script>
 
 <style lang='scss' scoped>
+.beian {
+  font-size: 10px !important;
+  color: #b7b7b7 !important;
+}
 .wrap {
   border-radius: 5px;
   box-shadow: 0 5px 10px -5px #dddcda;
@@ -236,7 +269,7 @@ export default {
   // background-color: #11bbb8;
 }
 .center {
-  width: 120px;
+  width: 140px;
   display: flex;
   justify-content: space-between;
 }
