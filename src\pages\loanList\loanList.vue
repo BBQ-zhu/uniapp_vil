@@ -3,7 +3,7 @@
     <u-navbar
       back-txt="返回"
       back-icon-color="#fff"
-      title="申请列表"
+      :title="type == 'loanList'?'贷款申请列表':'企业申请列表'"
       title-color="#fff"
       :background="{
         backgroundImage: 'linear-gradient(to right bottom,#46e3c4,#3cc8c9)',
@@ -11,8 +11,10 @@
     ></u-navbar>
 
     <view style>
-      <!-- 申请列表 -->
-      <loanList :list="loanList" :status="loadStatus"></loanList>
+      <!-- 贷款申请列表 --> 
+      <loanList v-if="type == 'loanList'" :list="loanList" :status="loadStatus"></loanList>
+      <!-- 企业申请列表 -->
+      <enterpriseList v-if="type == 'enterprise'" :list="loanList" :status="loadStatus"></enterpriseList>
     </view>
   </view>
 </template>
@@ -21,7 +23,7 @@
 export default {
   data() {
     return {
-      userInfo:{},
+      userInfo: {},
       type: "",
       //申请列表
       loanList: [],
@@ -33,13 +35,14 @@ export default {
     };
   },
   onLoad(option) {
-    this.type = option.name;
+    this.type = option.data;
     this.userInfo = uni.getStorageSync("userInfo");
-    this.getLoanList(); // 获取招聘列表
-  }, 
+    this.getLoanList(); // 获取列表
+  },
   onReachBottom() {
     // 监听上拉加载
     this.loadStatus = "loading";
+    this.find.currentPage++;
     this.getLoanList();
   },
   methods: {
@@ -47,26 +50,29 @@ export default {
       var data = {
         skip: this.find.limit * (this.find.currentPage - 1),
         limit: this.find.limit,
-        fuzz: 'manager1',
+        fuzz: "manager1",
         input: this.userInfo.uid,
       };
-      this.$axios.post(this.$api.findCustomer, data).then((res) => {
-        let arr = res.data[0].data;
-        if (arr.length == 0) {
-          this.loadStatus = "momore";
+      this.$axios.post(this.type == 'loanList' ? this.$api.findCustomer : this.$api.findEnterprise, data).then((res) => {
+        if (res.code == 200) {
+          let arr = res.data[0].data
+          if (arr.length == 0) {
+            this.loadStatus = 'momore'
+            this.find.currentPage--
+          } else {
+            this.loadStatus = 'loadmore'
+            let newArr = [];
+            arr.map((item) => {
+              if (item.status != "审核结束") {
+                item.show = false;
+                item.time = item.time.split(" ")[0];
+                newArr.push(item);
+              }
+            });
+            this.loanList = this.loanList.concat(arr)
+          }
         } else {
-          this.loadStatus = "loadmore";
-          this.find.currentPage++;
-          let newArr = []
-          arr.map(item=>{
-            //草稿\待审核\驳回\通过
-            if(item.status != '通过'){
-              item.show = false
-              item.time = item.time.split(' ')[0]
-              newArr.push(item)
-            }
-          })
-          this.loanList = this.loanList.concat(newArr);
+          this.find.currentPage--
         }
       });
     },
