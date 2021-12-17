@@ -7,8 +7,9 @@ import {
   post
 } from "@/common/js/http";
 import api from "@/common/js/api";
+import 'default-passive-events'
 
-
+// html解析器默认请求网址
 Vue.prototype.$URL = 'http://localhost:3030' //测试后端接口
 // Vue.prototype.$URL = 'http://zlc.zhulif.com:3030' //线上接口地址
 
