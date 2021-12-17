@@ -1,16 +1,17 @@
 <template>
   <view class="demand"> 
-    <view class="con-title">专家顾问一对一为您定制方案</view>
+    <view class="con-title">专业顾问一对一服务</view>
     <view class="con-serve">
       <span class="colorYellow">2000名</span>专业顾问已为
       <span class="colorYellow">100万+</span>的企业/用户提供服务
     </view>
     <view class="flex mt15">
-      <view class="con-Btn colorYellow">+注册公司</view>
-      <view class="con-Btn colorYellow">+记账</view>
-      <view class="con-Btn colorYellow">+注销</view>
-      <view class="con-Btn colorYellow">+商标</view>
-      <view class="con-Btn colorYellow">+更多服务</view>
+      <view class="con-Btn colorYellow">贷款</view>
+      <view class="con-Btn colorYellow">政策</view>
+      <view class="con-Btn colorYellow">记账</view>
+      <view class="con-Btn colorYellow">商标</view>
+      <view class="con-Btn colorYellow">注册</view>
+      <view class="con-Btn colorYellow">更多服务</view>
     </view>
     <view>
       <u-form :model="form" ref="uForm" label-width="100rpx">
@@ -80,12 +81,17 @@ export default {
       //   ]
       // }
     }
-  },
+  }, 
   // mounted() {
   // 	this.$refs.uForm.setRules(this.rules);
   // },
   methods: {
     submit() {
+      if(!uni.getStorageSync('vipUserInfo')){
+        this.$u.route({
+              url:"pages/vipLogin/vipLogin"
+            });
+      }
       //提交
       if (!this.form.title || !this.form.phone) {
         this.$refs.uToast.show({
@@ -101,17 +107,19 @@ export default {
       }
       let obj = {
         type: '专业顾问', // 分类
-        proname: '专家一对一咨询', // 产品名称
-        name: uni.getStorageSync('vipUserInfo').username || '前端提交客户', // 姓名
+        proname: '专业顾问', // 产品名称
+        name: uni.getStorageSync('vipUserInfo').username || '移动端客服', // 姓名
         phone: this.form.phone, // 电话
-        remarks: this.form.title
+        remarks: this.form.title,
+        status:'待审核',
+        manager1:''
       }
       this.$axios.post(this.$api.createIntegrate, obj).then(res => {
         if (res.code == 200) {
           let data = {
             proid: '',
             type: '专业顾问', // 数据来源
-            name: uni.getStorageSync('vipUserInfo').username || '前端咨询', // 客户名称
+            name: uni.getStorageSync('vipUserInfo').username || '移动端咨询', // 客户名称
             phone: this.form.phone, // 电话
             submitby: uni.getStorageSync('vipUserInfo').username || '未登录提交', // 提交人
             handler: 'all', // 处理人
