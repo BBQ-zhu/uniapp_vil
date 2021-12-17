@@ -19,11 +19,24 @@
         <view class="ml10" style="width: calc(100% - 100px)">
           <view class="reTitle"
             >{{ item.name }}
-            <u-tag class="ml10" :text="item.recomtype || '爆款'" mode="dark" :type="changeTypeTag('tag1',item.recomtype)"></u-tag>
+            <u-tag
+              v-if="item.recomtype"
+              class="ml10"
+              :text="item.recomtype"
+              mode="dark"
+              :type="changeTypeTag('tag1', item.recomtype)"
+            ></u-tag>
           </view>
           <view class="textOver1 mt5 color3">{{ item.description }}</view>
           <view class="flexStart mt5">
-            <u-tag class="mr5" v-for="val in item.recomintro" :key="val" :text="val" :type="changeTypeTag('tag2',val)" mode="light" ></u-tag>
+            <u-tag
+              class="mr5"
+              v-for="val in item.recomintro"
+              :key="val"
+              :text="val"
+              :type="changeTypeTag('tag2', val)"
+              mode="light"
+            ></u-tag>
           </view>
         </view>
       </view>
@@ -34,15 +47,15 @@
           <u-icon name="star-fill" class="colorYellow"></u-icon>
           <u-icon name="star-fill" class="colorYellow"></u-icon>
           <u-icon name="star-fill" class="colorYellow"></u-icon>
-          <view class="colorYellow ml10"
+          <view class="colorYellow ml10" v-if="item.newprice"
             >￥<span class="f18">{{ item.newprice }}</span></view
           >
         </view>
-        <view class="color3 ml20">{{ item.volume || 0 }}+销量</view>
+        <view class="color3 ml20">{{ item.totalview || 0 }}+浏览量</view>
       </view>
       <u-line style="margin: 15px 0"></u-line>
     </view>
-    <u-loadmore :status="status" />
+    <u-loadmore :status="status" /> 
   </view>
 </template>
 
@@ -58,45 +71,59 @@ export default {
         url: "/pages/details/details?name=" + item.name,
       });
     },
-    changeTypeTag(type,name){
-      let x = ''
-      if(type == 'tag1'){ // 爆款.独家.新品.优惠.限时
-        switch (name) 
-          { 
-            case '爆款':x="error"; 
-            break; 
-            case '独家':x="primary"; 
-            break; 
-            case '新品':x="success"; 
-            break; 
-            case '优惠':x="warning"; 
-            break; 
-            case '限时':x="error"; 
-            break; 
-            default:x="error";
-          }
-      }else if(type == 'tag2'){ // 无隐形费用、全程托管、专家顾问、一对一服务、急速办理、官方保障、银企合作
-        switch (name) 
-          { 
-            case '无隐形费用':x="success"; 
-            break; 
-            case '全程托管':x="primary"; 
-            break; 
-            case '专家顾问':x="warning"; 
-            break; 
-            case '一对一服务':x="warning"; 
-            break; 
-            case '急速办理':x="error"; 
+    changeTypeTag(type, name) {
+      let x = "";
+      if (type == "tag1") {
+        // 爆款.独家.新品.优惠.限时
+        switch (name) {
+          case "爆款":
+            x = "error";
             break;
-            case '官方保障':x="primary"; 
-            break; 
-            case '银企合作':x="success"; 
-            break; 
-            default:x="error";
-          }
+          case "独家":
+            x = "primary";
+            break;
+          case "新品":
+            x = "success";
+            break;
+          case "优惠":
+            x = "warning";
+            break;
+          case "限时":
+            x = "error";
+            break;
+          default:
+            x = "error";
+        }
+      } else if (type == "tag2") {
+        // 无隐形费用、全程托管、专家顾问、一对一服务、急速办理、官方保障、银企合作
+        switch (name) {
+          case "无隐形费用":
+            x = "success";
+            break;
+          case "全程托管":
+            x = "primary";
+            break;
+          case "专家顾问":
+            x = "warning";
+            break;
+          case "一对一服务":
+            x = "warning";
+            break;
+          case "急速办理":
+            x = "error";
+            break;
+          case "官方保障":
+            x = "primary";
+            break;
+          case "银企合作":
+            x = "success";
+            break;
+          default:
+            x = "error";
+        }
       }
-      return x
-    }
+      return x;
+    },
   },
 };
 </script>
