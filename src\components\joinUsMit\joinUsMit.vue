@@ -89,6 +89,11 @@ export default {
   },
   methods: {
     submit() {
+      if(!uni.getStorageSync('vipUserInfo')){
+        this.$u.route({
+              url:"pages/vipLogin/vipLogin"
+            });
+      }
       //提交
       if (!this.form.title || !this.form.phone) {
         this.$refs.uToast.show({
@@ -104,24 +109,27 @@ export default {
       }
       let obj = {
         type: "商务合作", // 分类
-        proname: '商务合作', // 产品名称
-        name: uni.getStorageSync('vipUserInfo').username || '前端提交客户', // 姓名
+        proname: "商务合作", // 产品名称
+        name: uni.getStorageSync("vipUserInfo").username || "移动端客服", // 姓名
         phone: this.form.phone, // 电话
         remarks: this.form.title,
+        status:'待审核',
+        manager1:''
       };
       this.$axios.post(this.$api.createIntegrate, obj).then((res) => {
         if (res.code == 200) {
           let data = {
-            proid: '',
-            type: '商务合作', // 数据来源
-            name: uni.getStorageSync('vipUserInfo').username || '前端咨询', // 客户名称
+            proid: "",
+            type: "商务合作", // 数据来源
+            name: uni.getStorageSync("vipUserInfo").username || "移动端咨询", // 客户名称
             phone: this.form.phone, // 电话
-            submitby: uni.getStorageSync('vipUserInfo').username || '未登录提交', // 提交人
-            handler: 'all', // 处理人
-            path: '/Integrate', // 跳转至综合服务
-            read: 'false' // 是否已处理
-          } 
-          this.$axios.post(this.$api.createAgent, data).then(res => {
+            submitby:
+              uni.getStorageSync("vipUserInfo").username || "未登录提交", // 提交人
+            handler: "all", // 处理人
+            path: "/Integrate", // 跳转至综合服务
+            read: "false", // 是否已处理
+          };
+          this.$axios.post(this.$api.createAgent, data).then((res) => {
             if (res.code == 200) {
               this.$refs.uToast.show({
                 title: "提交成功",
@@ -132,7 +140,7 @@ export default {
                 phone: "",
               };
             }
-          })
+          });
         }
       });
     },
