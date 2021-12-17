@@ -1,11 +1,15 @@
 //api接口统一管理文件
 module.exports = {
     checkToken: 'checkToken', //校验token是否有效
+    //访问量统计
+    findStatistics: 'statistics/findStatistics',
+    createStatistics: 'statistics/createStatistics',
+    updateStatistics: 'statistics/updateStatistics',
     //内部资料
-    createInternal:'internal/createInternal',
-    findInternal:'internal/findInternal',
-    updateInternal:'internal/updateInternal',
-    deleteInternal:'internal/deleteInternal',
+    createInternal: 'internal/createInternal',
+    findInternal: 'internal/findInternal',
+    updateInternal: 'internal/updateInternal',
+    deleteInternal: 'internal/deleteInternal',
     //代办中心
     createAgent: 'agents/createAgent',
     deleteAgent: 'agents/deleteAgent',
@@ -83,13 +87,18 @@ module.exports = {
     deleteEnterprise: 'customer/deleteEnterprise',
     updateEnterprise: 'customer/updateEnterprise',
     findEnterprise: 'customer/findEnterprise',
+    //抵押客户
+    findMortgages: 'customer/findMortgages',
+    createMortgages: 'customer/createMortgages',
+    updateMortgages: 'customer/updateMortgages',
+    deleteMortgages: 'customer/deleteMortgages',
     //咨询客户-综合服务
     createIntegrate: 'service/createIntegrate',
     deleteIntegrate: 'service/deleteIntegrate',
     updateIntegrate: 'service/updateIntegrate',
     findIntegrate: 'service/findIntegrate',
     //合同管理
-    uploadPhoneContractImg: 'api/contract/uploadPhoneContractImg', //手机上传合同图片
+    uploadPhoneContractImg: 'contract/uploadPhoneContractImg', //手机上传合同图片
     uploadContractImg: 'api/contract/uploadContractImg', //后台上传合同图片
     delContractImg: 'contract/delContractImg', //删除合同图片
     findContract: 'contract/findContract', //查询合同列表
