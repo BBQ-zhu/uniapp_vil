@@ -4,16 +4,8 @@
       <view class="flexBetween Ctitle">
         <u-icon name="home" size="40" @click="toHome()"></u-icon>
         <view>员工中心</view>
-        <u-icon
-          name="setting"
-          size="40"
-          @click="option.typeShow = true"
-        ></u-icon>
-        <u-action-sheet
-          @click="typeChange"
-          v-model="option.typeShow"
-          :list="option.type"
-        ></u-action-sheet>
+        <u-icon name="setting" size="40" @click="option.typeShow = true"></u-icon>
+        <u-action-sheet @click="typeChange" v-model="option.typeShow" :list="option.type"></u-action-sheet>
       </view>
       <view class="flexStart artName">
         <u-avatar :src="userInfo.imgurl" :show-level="true"></u-avatar>
@@ -73,11 +65,7 @@
         </view>
       </view>
       <view class="boxCont mt10">
-        <view
-          class="detailsText fw600 mb10"
-          style="border-left: 3px solid #45b2fd"
-          >团队业绩</view
-        >
+        <view class="detailsText fw600 mb10" style="border-left: 3px solid #45b2fd">团队业绩</view>
         <view class="flexBetween">
           <view class="navItem">
             <u-count-to
@@ -114,36 +102,25 @@
           </view>
         </view>
       </view>
-      <view class="mt10">
+      <view class="mt10 mb20">
         <u-cell-group class="f12">
-          <u-cell-item
-            title="客户代办"
-            icon="chat-fill"
-            @click="cellChange('agents')"
-          >
-            <span class="colorRed fw600" v-if="agentsList.length > 0">{{
+          <u-cell-item title="客户代办" icon="chat-fill" @click="cellChange('agents')">
+            <span class="colorRed fw600" v-if="agentsList.length > 0">
+              {{
               agentsList.length
-            }}</span>
+              }}
+            </span>
           </u-cell-item>
+          <u-cell-item title="客户合同" icon="edit-pen" @click="cellChange('myContract')"></u-cell-item>
+          <u-cell-item title="意向客户" icon="account-fill" @click="cellChange('intended')"></u-cell-item>
+          <u-cell-item title="贷款客户" icon="rmb-circle-fill" @click="cellChange('loanList')"></u-cell-item>
+          <u-cell-item title="企业客户" icon="home-fill" @click="cellChange('enterprise')"></u-cell-item>
+          <u-cell-item title="内部资料" icon="file-text-fill" @click="cellChange('internalDetail')"></u-cell-item>
           <u-cell-item
-            title="客户合同"
-            icon="account-fill"
-            @click="cellChange('myContract')"
-          ></u-cell-item>
-          <u-cell-item
-            title="贷款申请"
-            icon="rmb-circle-fill"
-            @click="cellChange('loanList')"
-          ></u-cell-item>
-          <u-cell-item
-            title="企业申请"
-            icon="home-fill"
-            @click="cellChange('enterprise')"
-          ></u-cell-item>
-          <u-cell-item
-            title="内部资料"
+            v-if="userInfo.seedata== '是'"
+            title="大数据查询"
             icon="file-text-fill"
-            @click="cellChange('internalDetail')"
+            @click="cellChange('bigData')"
           ></u-cell-item>
         </u-cell-group>
       </view>
@@ -155,90 +132,128 @@
 export default {
   data() {
     return {
-      userInfo: "",
-      agentsList: "", //待办列表
+      userInfo: '',
+      agentsList: '', //待办列表
       option: {
         //弹出框
         typeShow: false,
         type: [
           {
-            text: "个人资料",
-            color: "red",
-          },
-        ],
+            text: '个人资料',
+            color: 'red'
+          }
+        ]
       },
       userResults: {
         month: 0,
         year: 0,
-        all: 0,
+        all: 0
       },
       teamResults: {
         month: 0,
         year: 0,
-        all: 0,
-      },
-    };
+        all: 0
+      }
+    }
   },
-  onLoad() {
-    this.userInfo = uni.getStorageSync("userInfo");
-    this.findUserPer(); //个人业绩和代办统计
-    this.findTeamPer(); //团队业绩
+  async onLoad() {
+    var data = {
+      skip: 0,
+      limit: 1,
+      fuzz: 'phone',
+      input: (uni.getStorageSync('userInfo') || {}).phone
+    }
+    let res = await this.$axios.post(this.$api.findUser, data)
+    if (res.code == 200) {
+      let User = (res.data[0].data || [])[0]
+      //主要为了更新大数据查询权限
+      uni.setStorageSync('userInfo', User)
+    }
+    this.userInfo = uni.getStorageSync('userInfo') || {}
+    this.findUserPer() //个人业绩和代办统计
+    this.findTeamPer() //团队业绩
   },
   methods: {
     // 查询团队业绩
     async findTeamPer() {
-      let arrUser = await this.findTeamUser(); //当前员工所在团队的人数信息
-      let arr = [];
+      let arrUser = await this.findTeamUser() //当前员工所在团队的人数信息
+      let arr = []
       for (let item of arrUser) {
-        var obj = await this.findTeam(item.uid);
-        obj.map((val) => {
-          arr.push(val);
-        });
+        var obj = await this.findTeam(item.uid)
+        obj.map(val => {
+          arr.push(val)
+        })
       }
       //团队业绩统计
-      this.teamResults = await this.statistics(arr);
+      this.teamResults = await this.statistics(arr)
     },
     // 查询个人业绩
     async findUserPer() {
-      let arr = await this.findTeam(this.userInfo.uid);
+      let arr = await this.findTeam(this.userInfo.uid)
       //个人业绩统计
-      this.userResults = await this.statistics(arr);
+      this.userResults = await this.statistics(arr)
       //合同去重
-      var result = [];
-      var obj = {};
+      var result = []
+      var obj = {}
       for (var i = 0; i < arr.length; i++) {
         if (!obj[arr[i]._id]) {
-          result.push(arr[i]);
-          obj[arr[i]._id] = true;
+          result.push(arr[i])
+          obj[arr[i]._id] = true
         }
       }
-      this.agentsList = this.$commonJS.agents(result); // 客户代办
+      this.findMortgage(result)
+    },
+    //合同代办、抵押客户代办合并
+    async findMortgage(result) {
+      let mortArr = []
+      var data = {
+        skip: 0,
+        limit: 9999999,
+        fuzz: 'manager1',
+        input: this.userInfo.uid || ''
+      }
+      let arr = await this.$axios.post(this.$api.findMortgages, data)
+      if (
+        arr.code == 200 &&
+        arr.data.length > 0 &&
+        arr.data[0].data.length > 0
+      ) {
+        mortArr = arr.data[0].data
+      } else {
+        mortArr = []
+      }
+      let allArr = mortArr.concat(result)
+      // 客户代办
+      this.agentsList = this.$commonJS.agents(allArr)
     },
     //根据合同列表分时间段统计业绩
     statistics(arr) {
-      let obj = { month: 0, year: 0, all: 0 };
-      let nowTieme = new Date().toLocaleString().split(" ")[0].split("/");
-      arr.map((item) => {
+      let obj = { month: 0, year: 0, all: 0 }
+      let nowTieme = new Date()
+        .toLocaleString()
+        .split(' ')[0]
+        .split('/')
+      arr.map(item => {
         // let time = item.time.split(" ")[0].split("/"); // 用户签字时间
-        let time = item.startime.split("-"); // 合同起始时间
-        let exp = parseInt(item.expenses) || 0;
-        obj.all += exp;
+        let time = item.startime.split('-') // 合同起始时间
+        let exp = parseInt(item.expenses) || 0
+        obj.all += exp
         if (nowTieme[0] == parseInt(time[0])) {
-          obj.year += exp;
+          obj.year += exp
         }
         if (nowTieme[1] == parseInt(time[1])) {
-          obj.month += exp;
+          obj.month += exp
         }
-      });
-      return obj;
+      })
+      return obj
     },
     async findTeam(uid) {
       // 合同总数查询
-      let arr1 = await this.findCont("manager1", uid);
-      let arr2 = await this.findCont("manager2", uid);
-      let arr3 = await this.findCont("manager3", uid);
-      let arr = arr1.concat(arr2).concat(arr3);
-      return arr; // 业绩统计（只要当前员工包含在客户经理、权证经理、审核经理中的一个，都会算业绩，且可以同时担任多个经理，业绩就翻倍）
+      let arr1 = await this.findCont('manager1', uid)
+      let arr2 = await this.findCont('manager2', uid)
+      let arr3 = await this.findCont('manager3', uid)
+      let arr = arr1.concat(arr2).concat(arr3)
+      return arr // 业绩统计（只要当前员工包含在客户经理、金融客服、代办客服中的一个，都会算业绩，且可以同时担任多个经理，业绩就翻倍）
     },
     async findCont(name, uid) {
       //查询经理的合同
@@ -246,17 +261,17 @@ export default {
         skip: 0,
         limit: 9999999,
         fuzz: name,
-        input: uid,
-      };
-      let arr = await this.$axios.post(this.$api.findContract, data);
+        input: uid
+      }
+      let arr = await this.$axios.post(this.$api.findContract, data)
       if (
         arr.code == 200 &&
         arr.data.length > 0 &&
         arr.data[0].data.length > 0
       ) {
-        return arr.data[0].data;
+        return arr.data[0].data
       } else {
-        return [];
+        return []
       }
     },
     //查询当前用户所属团队的人数
@@ -264,53 +279,58 @@ export default {
       var data = {
         skip: 0,
         limit: 9999999,
-        fuzz: "team",
-        input: this.userInfo.team,
-      };
-      let arr = await this.$axios.post(this.$api.findUser, data);
+        fuzz: 'team',
+        input: this.userInfo.team
+      }
+      let arr = await this.$axios.post(this.$api.findUser, data)
       if (
         arr.code == 200 &&
         arr.data.length > 0 &&
         arr.data[0].data.length > 0
       ) {
-        return arr.data[0].data;
+        return arr.data[0].data
       } else {
-        return [];
+        return []
       }
     },
     typeChange(index) {
       if (index == 0) {
         uni.navigateTo({
-          url: "/pages/userInfo/userInfo",
-        });
+          url: '/pages/userInfo/userInfo'
+        })
       }
     },
     cellChange(path) {
-      if (path == "agents" && this.agentsList.length > 0) {
+      if (path == 'agents' && this.agentsList.length > 0) {
         //客户代办
         uni.navigateTo({
           url:
-            "/pages/agents/agents?data=" +
-            encodeURIComponent(JSON.stringify(this.agentsList)),
-        });
-      } else if (path == "myContract") {
+            '/pages/agents/agents?data=' +
+            encodeURIComponent(JSON.stringify(this.agentsList))
+        })
+      } else if (path == 'myContract') {
         //客户合同
         uni.navigateTo({
-          url: "/pages/myContract/myContract?data=" + "myVipUser",
-        });
+          url: '/pages/myContract/myContract?data=' + 'myVipUser'
+        })
+      } else if (path == 'loanList' || path == 'enterprise') {
+        //贷款客户和企业客户
+        uni.navigateTo({
+          url: `/pages/loanList/loanList?data=${path}`
+        })
       } else {
         uni.navigateTo({
-          url: `/pages/${path}/${path}`,
-        });
+          url: `/pages/${path}/${path}`
+        })
       }
     },
     toHome() {
       uni.switchTab({
-        url: "/pages/user/user",
-      });
-    },
-  },
-};
+        url: '/pages/user/user'
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
