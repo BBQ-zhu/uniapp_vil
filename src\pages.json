@@ -1,107 +1,115 @@
 {
 	"pages": [{
 		"path": "pages/index/index",
-		"style":{
-			"enablePullDownRefresh":false, // 下拉刷新
-			"app-plus":{
-				"scrollIndicator":"none"
+		"style": {
+			"enablePullDownRefresh": false, // 下拉刷新
+			"app-plus": {
+				"scrollIndicator": "none"
 			}
 		}
-	},{
+	}, {
 		"path": "pages/class/class"
-	},{
+	}, {
 		"path": "pages/shop/shop"
-	},{
+	}, {
 		"path": "pages/user/user"
-	},{
+	}, {
 		"path": "pages/userInfo/userInfo"
-	},{
+	}, {
 		"path": "pages/details/details"
-	},{
+	}, {
 		"path": "pages/internal/internal"
-	},{
+	}, {
 		"path": "pages/internalDetail/internalDetail"
-	},{
+	}, {
 		"path": "pages/login/login"
-	},{
+	}, {
 		"path": "pages/register/register"
 	},{
+		"path": "pages/intended/intended" //意向客户
+	},{
+		"path": "pages/intendedDetail/intendedDetail" //意向客户详情编辑
+	}, {
 		"path": "pages/loan/loan"
 	},{
-		"path": "pages/loanList/loanList" 
-	},{
+		"path": "pages/loanList/loanList"
+	}, {
 		"path": "pages/enterprise/enterprise"
-	},{
+	}, {
+		"path": "pages/bigData/bigData" //大数据查询
+	}, {
 		"path": "pages/findProdect/findProdect"
-	},{
-		"path": "pages/application/application" // 我的申请
-	},{
+	}, {
+		"path": "pages/application/application" // 我的申请 
+	}, {
 		"path": "pages/news/news"
-	},{
+	}, {
 		"path": "pages/newsDetails/newsDetails"
-	},{
+	}, {
 		"path": "pages/joinUs/joinUs"
-	},{
+	}, {
 		"path": "pages/agents/agents"
-	},{
+	}, {
 		"path": "pages/myContract/myContract"
-	},{
+	}, {
 		"path": "pages/myContractDetails/myContractDetails"
-	},{
+	}, {
 		"path": "pages/business/business"
-	},{
+	}, {
 		"path": "pages/recruitDetails/recruitDetails"
-	},{
+	}, {
 		"path": "pages/sign/sign" //签名
-	},{
+	}, {
 		"path": "pages/vipLogin/vipLogin" //客户登录
-	},{
+	}, {
 		"path": "pages/vipLogin/code" //登录验证码
 	}],
 	"globalStyle": {
+		"onReachBottomDistance":100,
 		"navigationStyle": "custom",
-		"app-plus":{
+		"app-plus": {
 			"titleNView": false
 		}
 	},
-	"tabBar":{
-		"color":"#1E1E1E",
-		"selectedColor":"#11BBB8",
-		"backgroundColor":"#FFFFFF",
-		"borderStyle":"black",
-		"fontSize":"#12px",
-		"iconWidth":"24px",
-		"spacing":"3px",
-		"height":"50px",
-		"list":[{
-			"pagePath":"pages/index/index",
-			"text":"首页",
-			"iconPath":"static/icons/home.png",
-			"selectedIconPath":"static/icons/home1.png"
-		},
-		{
-			"pagePath":"pages/class/class",
-			"text":"分类",
-			"iconPath":"static/icons/class.png",
-			"selectedIconPath":"static/icons/class1.png"
-		},
-		{
-			"pagePath":"pages/shop/shop",
-			"text":"商城",
-			"iconPath":"static/icons/shop.png",
-			"selectedIconPath":"static/icons/shop1.png"
-		},
-		{
-			"pagePath":"pages/user/user",
-			"text":"我的",
-			"iconPath":"static/icons/user.png",
-			"selectedIconPath":"static/icons/user1.png"
-		}],
-		"midButton":{
-			"width":"45px",
-			"height":"41px",
-			"iconWidth":"35px",
-			"iconPath":"static/icons/phone.png"
+	"tabBar": {
+		"color": "#1E1E1E",
+		"selectedColor": "#11BBB8",
+		"backgroundColor": "#FFFFFF",
+		"borderStyle": "black",
+		"fontSize": "#12px",
+		"iconWidth": "24px",
+		"spacing": "3px",
+		"height": "50px",
+		"list": [{
+				"pagePath": "pages/index/index",
+				"text": "首页",
+				"iconPath": "static/icons/home.png",
+				"selectedIconPath": "static/icons/home1.png"
+			},
+			{
+				"pagePath": "pages/class/class",
+				"text": "分类",
+				"iconPath": "static/icons/class.png",
+				"selectedIconPath": "static/icons/class1.png"
+			},
+			{
+				"pagePath": "pages/shop/shop",
+				"text": "商城",
+				"iconPath": "static/icons/shop.png",
+				"selectedIconPath": "static/icons/shop1.png"
+			},
+			{
+				"pagePath": "pages/user/user",
+				"text": "我的",
+				"iconPath": "static/icons/user.png",
+				"selectedIconPath": "static/icons/user1.png"
+			}
+		],
+		"midButton": {
+			"width": "45px",
+			"height": "41px",
+			"iconWidth": "35px",
+			"iconPath": "static/icons/phone.png"
 		}
 	},
 	"easycom": {
