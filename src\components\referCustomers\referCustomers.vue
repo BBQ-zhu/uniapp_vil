@@ -14,8 +14,7 @@
           font-size="28"
           color="#45b2fd"
           bold
-        ></u-count-to>
-        次
+        ></u-count-to>次
       </span>
     </view>
     <view class="flex mt15">
@@ -27,13 +26,13 @@
     <view>
       <u-form :model="form" ref="uForm" label-width="100rpx">
         <u-form-item
-          label="客户需求"
-          prop="title"
+          label="客户姓名"
+          prop="vipuser"
           :leftIconStyle="{ color: '#45b2fd', fontSize: '26rpx' }"
-          left-icon="file-text"
+          left-icon="account"
           label-width="160"
         >
-          <u-input v-model="form.title" placeholder="请输入客户需求" />
+          <u-input v-model="form.vipuser" placeholder="请输入客户姓名" />
         </u-form-item>
         <u-form-item
           label="手机号码"
@@ -42,32 +41,28 @@
           left-icon="phone"
           label-width="160"
         >
-          <u-input
-            v-model="form.phone"
-            type="number"
-            placeholder="请输入手机号"
-          />
+          <u-input v-model="form.phone" type="number" placeholder="请输入手机号" />
         </u-form-item>
-        <u-button
-          class="mt15 greenBtn border50"
-          type="warning"
-          shape="square"
-          @click="submit"
-          >立即推荐</u-button
+        <u-form-item
+          label="客户需求"
+          prop="title"
+          :leftIconStyle="{ color: '#45b2fd', fontSize: '26rpx' }"
+          left-icon="file-text"
+          label-width="160"
         >
+          <u-input v-model="form.title" placeholder="请输入客户需求" />
+        </u-form-item>
+        <u-button class="mt15 greenBtn border50" type="warning" shape="square" @click="submit">立即推荐</u-button>
       </u-form>
       <view class="flex flexAround mt10">
         <view>
-          <u-icon name="integral-fill" size="26" class="colorBlue mr5"></u-icon
-          >信息安全
+          <u-icon name="integral-fill" size="26" class="colorBlue mr5"></u-icon>信息安全
         </view>
         <view>
-          <u-icon name="heart-fill" size="26" class="colorBlue mr5"></u-icon
-          >官方服务
+          <u-icon name="heart-fill" size="26" class="colorBlue mr5"></u-icon>官方服务
         </view>
         <view>
-          <u-icon name="bell-fill" size="26" class="colorBlue mr5"></u-icon
-          >服务透明
+          <u-icon name="bell-fill" size="26" class="colorBlue mr5"></u-icon>服务透明
         </view>
       </view>
     </view>
@@ -80,62 +75,71 @@ export default {
   data() {
     return {
       form: {
-        title: "",
-        phone: "",
-      },
-    };
+        title: '',
+        vipuser: '',
+        phone: ''
+      }
+    }
   },
   methods: {
     submit() {
+      if(!uni.getStorageSync('vipUserInfo')){
+        this.$u.route({
+              url:"pages/vipLogin/vipLogin"
+            });
+      }
       //提交
-      if (!this.form.title || !this.form.phone) {
+      if (!this.form.title || !this.form.phone || !this.form.vipuser) {
         this.$refs.uToast.show({
-          title: "请输入信息",
-        });
-        return;
+          title: '请输入信息'
+        })
+        return
       }
       if (!/^1[3|4|5|7|8]\d{9}$/.test(this.form.phone)) {
         this.$refs.uToast.show({
-          title: "请输入正确手机号",
-        });
-        return;
+          title: '请输入正确手机号'
+        })
+        return
       }
       let obj = {
-        type: "推荐客户", // 分类
+        type: '推荐客户', // 分类
         proname: '推荐客户', // 产品名称
-        name: uni.getStorageSync('vipUserInfo').username || '前端提交客户', // 姓名
+        name: uni.getStorageSync('vipUserInfo').username || '移动端客服', // 姓名
         phone: this.form.phone, // 电话
-        remarks: this.form.title,
-      };
-      this.$axios.post(this.$api.createIntegrate, obj).then((res) => {
+        remarks: `推荐客户名称：${this.form.vipuser}-客户需求：${this.form.title}`,
+        status:'待审核',
+        manager1:''
+      }
+      this.$axios.post(this.$api.createIntegrate, obj).then(res => {
         if (res.code == 200) {
           let data = {
             proid: '',
             type: '推荐客户', // 数据来源
-            name: uni.getStorageSync('vipUserInfo').username || '前端咨询', // 客户名称
+            name: uni.getStorageSync('vipUserInfo').username || '移动端咨询', // 客户名称
             phone: this.form.phone, // 电话
-            submitby: uni.getStorageSync('vipUserInfo').username || '未登录提交', // 提交人
+            submitby:
+              uni.getStorageSync('vipUserInfo').username || '未登录提交', // 提交人
             handler: 'all', // 处理人
             path: '/Integrate', // 跳转至综合服务
             read: 'false' // 是否已处理
-          } 
+          }
           this.$axios.post(this.$api.createAgent, data).then(res => {
             if (res.code == 200) {
               this.$refs.uToast.show({
-                title: "提交成功",
-                type: "success",
-              });
+                title: '提交成功',
+                type: 'success'
+              })
               this.form = {
-                title: "",
-                phone: "",
-              };
+                title: '',
+                phone: ''
+              }
             }
           })
         }
-      });
-    },
-  },
-};
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
