@@ -142,10 +142,8 @@ export default {
         scrollTop: 0,
         duration: 0
       })
-      this.contractDetails.time =
-        new Date().toLocaleDateString() +
-        ' ' +
-        new Date().toLocaleTimeString().slice(2)
+      this.contractDetails.time = `${new Date().getFullYear()}/${new Date().getMonth() +
+        1}/${new Date().getDate()}`
       const timeout = setTimeout(async () => {
         const shareContent = document.querySelector('#poster')
         const canvas = await html2canvas(shareContent, {
@@ -174,36 +172,10 @@ export default {
                   })
                 })
             }
-          }).catch(()=>{
-            this.loadingShow = false;
           })
-        // await uni.uploadFile({
-        //   url: this.$api.uploadPhoneContractImg,
-        //   // filePath: "w",
-        //   name: "contractFile",
-        //   formData: {
-        //     oldimgurl: this.contractDetails.imgurl,
-        //     newimgurl: this.contractImg,
-        //   },
-        //   success: async (uploadFileRes) => {
-        //     let res = JSON.parse(uploadFileRes.data);
-        //     if (res.code == 200) {
-        //       this.contractDetails.imgurl = res.data;
-        //       this.contractDetails.status = "审核中";
-        //       await this.$axios
-        //         .post(this.$api.updataContract, this.contractDetails)
-        //         .then((res) => {
-        //           this.loadingShow = false;
-        //           uni.switchTab({
-        //             url: "/pages/user/user",
-        //           });
-        //         });
-        //     }
-        //   },
-        //   complete: () => {
-        //     this.loadingShow = false;
-        //   },
-        // });
+          .catch(() => {
+            this.loadingShow = false
+          })
         clearTimeout(timeout)
       }, 1000)
     },
@@ -218,10 +190,52 @@ export default {
           success(res) {
             _this.signBase64 = res.tempFilePath
             _this.showContrat = false
-            _this.capture() // 生产图片
+            _this.capture2() // 上传签名图片
           }
         })
       })
+    },
+    // 上传签名图片
+    async capture2() {
+      this.loadingShow = true
+      this.contractDetails.time = `${new Date().getFullYear()}/${new Date().getMonth() +
+        1}/${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`
+      await this.$axios
+        .post(this.$api.uploadPhoneContractImg, {
+          oldimgurl: this.contractDetails.imgurl,
+          newimgurl: this.signBase64
+        })
+        .then(async res => {
+          if (res.code == 200) {
+            this.contractDetails.imgurl = res.data
+            this.contractDetails.status = '审核中'
+            await this.$axios
+              .post(this.$api.updataContract, this.contractDetails)
+              .then(res => {
+                
+                this.loadingShow = false
+                uni.switchTab({
+                  url: '/pages/user/user'
+                })
+              })
+              uni.showToast({
+                  title: '签约成功',
+                  icon: 'none'
+                })
+          } else {
+            uni.showToast({
+              title: '合同提交失败',
+              icon: 'none'
+            })
+          }
+        })
+        .catch(() => {
+          uni.showToast({
+            title: '合同提交失败',
+            icon: 'none'
+          })
+          this.loadingShow = false
+        })
     },
     // 取消按钮
     close() {
