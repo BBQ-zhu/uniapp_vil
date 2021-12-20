@@ -67,8 +67,7 @@ const phoneNum = (phone) => {
 
 const agents = (arr) => {
     //我的代办
-    let nowTime = new Date().toLocaleString().split(' ')[0]
-    let arrTime = nowTime.split('/') //现在时间
+    let arrTime = `${new Date().getFullYear()}/${new Date().getMonth()+1}/${new Date().getDate()}`.split('/') //现在时间
     let agentsList = []
     arr.map(item => {
         let itemTime = item.endtime.split('-') //结束时间
