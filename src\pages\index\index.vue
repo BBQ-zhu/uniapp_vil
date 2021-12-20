@@ -104,7 +104,7 @@ export default {
     ) {
       // PC端
       console.log('PC端')
-      // window.location.href = 'zlb.zhulif.com'
+      // window.location.href = 'http://zld.zhulif.com/#/'
       window.location.href = 'http://localhost:8080/#/'
     } else if (ua.indexOf('iphone') > 0 || ua.indexOf('android') > 0) {
       // 移动端
