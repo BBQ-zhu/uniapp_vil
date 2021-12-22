@@ -38,7 +38,7 @@
         <!-- <view v-html="contractDetails.remarks"></view> -->
         <view id="poster" class="u-content">
           <view v-html="contractDetails.remarks"></view>
-          <view v-if="contractDetails.status !='待签约'">
+          <view v-if="contractDetails.status !='待签约' && contractDetails.status">
           <view class="mt10 signBox poRelative">
             客户签名：
             <u-image
@@ -87,7 +87,7 @@
       :show-cancel-button="true"
     ></u-modal>
     <!-- 水印效果 -->
-    <!-- <jm-watermark></jm-watermark> -->
+    <jm-watermark></jm-watermark>
   </view>
 </template>
 
