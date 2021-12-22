@@ -56,12 +56,12 @@
               placeholder="请输入客户经理工号"
             ></u-input>
           </u-form-item>
-          <u-form-item v-if="ruleForm.manager2" label="金融客服:" prop="manager2">
+          <u-form-item v-if="ruleForm.manager2" label="客服经理:" prop="manager2">
             <u-input
               v-model="ruleForm.manager2"
               disabled
               @focus="findUser('manager2', ruleForm.manager2)"
-              placeholder="请输入金融客服工号"
+              placeholder="请输入客服经理工号"
             ></u-input>
           </u-form-item>
           <u-form-item v-if="ruleForm.manager3" label="代办客服:" prop="manager3">
@@ -135,7 +135,7 @@ export default {
         accout: '', //天府通账号
         hometeam: '', //归属团队
         manager1: '', //客户经理
-        manager2: '', //金融客服
+        manager2: '', //客服经理
         manager3: '', //代办客服
         status: '草稿', //审核状态 草稿、待审核、审核中、驳回、拒绝、通过、审核结束
         feedback: '', //反馈消息
@@ -245,7 +245,7 @@ export default {
         })
         return
       }
-      if (!/^1[3|4|5|7|8]\d{9}$/.test(this.ruleForm.phone)) {
+      if (!/^1[3|4|5|6|7|8|9]\d{9}$/.test(this.ruleForm.phone)) {
         uni.showToast({
           title: '请输入正确的手机号',
           icon: 'none'
@@ -269,7 +269,6 @@ export default {
       if (type == 'save') {
         this.ruleForm.status = '草稿'
       }
-
       if (this.isNew) {
         var data = {
           skip: 0,
@@ -284,10 +283,10 @@ export default {
           if (tableData.length != 0) {
             let val = tableData[0]
             let valtime = val.time.split(' ')[0]
-            let time = new Date().toLocaleDateString()
+            let time = `${new Date().getFullYear()}/${new Date().getMonth()+1}/${new Date().getDate()}`
             if (valtime == time) {
               uni.showToast({
-                title: '该用户今日已提交',
+                title: '该客户今日已被'+val.manager1+'提交',
                 icon: 'none'
               })
               return
