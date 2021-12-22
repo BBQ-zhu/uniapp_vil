@@ -118,7 +118,7 @@
           <u-cell-item title="内部资料" icon="file-text-fill" @click="cellChange('internalDetail')"></u-cell-item>
           <u-cell-item
             v-if="userInfo.seedata== '是'"
-            title="大数据查询"
+            title="客户查询"
             icon="file-text-fill"
             @click="cellChange('bigData')"
           ></u-cell-item>
@@ -166,7 +166,7 @@ export default {
     let res = await this.$axios.post(this.$api.findUser, data)
     if (res.code == 200) {
       let User = (res.data[0].data || [])[0]
-      //主要为了更新大数据查询权限
+      //主要为了更新客户查询权限
       uni.setStorageSync('userInfo', User)
     }
     this.userInfo = uni.getStorageSync('userInfo') || {}
@@ -229,19 +229,15 @@ export default {
     //根据合同列表分时间段统计业绩
     statistics(arr) {
       let obj = { month: 0, year: 0, all: 0 }
-      let nowTieme = new Date()
-        .toLocaleString()
-        .split(' ')[0]
-        .split('/')
+      let nowTieme = `${new Date().getFullYear()}/${new Date().getMonth()+1}/${new Date().getDate()}`.split('/')
       arr.map(item => {
-        // let time = item.time.split(" ")[0].split("/"); // 用户签字时间
-        let time = item.startime.split('-') // 合同起始时间
+        let time = item.time.split('/') // 合同起始时间
         let exp = parseInt(item.expenses) || 0
         obj.all += exp
-        if (nowTieme[0] == parseInt(time[0])) {
+        if (nowTieme[0] == time[0]) { //年
           obj.year += exp
         }
-        if (nowTieme[1] == parseInt(time[1])) {
+        if (nowTieme[0] == time[0] && nowTieme[1] == time[1]) { //月
           obj.month += exp
         }
       })
@@ -253,7 +249,7 @@ export default {
       let arr2 = await this.findCont('manager2', uid)
       let arr3 = await this.findCont('manager3', uid)
       let arr = arr1.concat(arr2).concat(arr3)
-      return arr // 业绩统计（只要当前员工包含在客户经理、金融客服、代办客服中的一个，都会算业绩，且可以同时担任多个经理，业绩就翻倍）
+      return arr // 业绩统计（只要当前员工包含在客户经理、客服经理、代办客服中的一个，都会算业绩，且可以同时担任多个经理，业绩就翻倍）
     },
     async findCont(name, uid) {
       //查询经理的合同
