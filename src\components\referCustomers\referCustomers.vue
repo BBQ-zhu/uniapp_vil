@@ -17,11 +17,11 @@
         ></u-count-to>次
       </span>
     </view>
-    <view class="flex mt15">
+    <view class="flexCenter mt15">
       <view class="con-Btn greenBtn">+现金奖励</view>
       <view class="con-Btn greenBtn">+商城积分</view>
       <view class="con-Btn greenBtn">+合作升级</view>
-      <view class="con-Btn greenBtn">+更多好礼</view>
+      <!-- <view class="con-Btn greenBtn">+更多好礼</view> -->
     </view>
     <view>
       <u-form :model="form" ref="uForm" label-width="100rpx">
@@ -95,7 +95,7 @@ export default {
         })
         return
       }
-      if (!/^1[3|4|5|7|8]\d{9}$/.test(this.form.phone)) {
+      if (!/^1[3|4|5|6|7|8|9]\d{9}$/.test(this.form.phone)) {
         this.$refs.uToast.show({
           title: '请输入正确手机号'
         })
@@ -104,9 +104,9 @@ export default {
       let obj = {
         type: '推荐客户', // 分类
         proname: '推荐客户', // 产品名称
-        name: uni.getStorageSync('vipUserInfo').username || '移动端客服', // 姓名
-        phone: this.form.phone, // 电话
-        remarks: `推荐客户名称：${this.form.vipuser}-客户需求：${this.form.title}`,
+        name: uni.getStorageSync('vipUserInfo').username || '未登录', // 姓名
+        phone: uni.getStorageSync('vipUserInfo').phone || '未登录', // 电话 
+        remarks: `推荐的客户名称：${this.form.vipuser}-推荐的客户电话：${this.form.phone}-客户需求：${this.form.title}`,
         status:'待审核',
         manager1:''
       }
