@@ -1,47 +1,92 @@
 <template>
-  <view class="content" v-if="consultantList.length">  
+  <view class="content">
     <view class="flex flexBetween mb15">
       <view class="conName">咨询顾问</view>
       <u-icon name="arrow-right color2"></u-icon>
     </view>
+    <!-- 第一行 -->
     <view class="schoolSro">
       <view
         class="mr10 srcItem"
-        v-for="(item, index) in consultantList"
+        v-for="(item, index) in consultantList.arr1"
         :key="index + 'consultant'"
       >
-        <view
-          class="recomed flexStart"
-          style="align-items: center; flex-wrap: nowrap"
-        >
-          <view>
-            <u-avatar
-              :src="item.imgurl"
-              :show-level="true"
-              style="width: 55px; height: 55px"
-            ></u-avatar>
+        <view class="recomed flexBetween">
+          <view style="width:50%">
+            <u-avatar :src="item.imgurl" :show-level="true" style="width: 55px; height: 55px"></u-avatar>
+            <view class="reBtn yellowBtn mt5" @click="call(item.phone)">咨询顾问</view>
           </view>
-          <view class="ml10" style="width: 180px">
-            <view class>
-              {{ item.username }}
-              <u-icon name="account" color="#11BBB8" class="ml10"></u-icon>
-              <span class="color2 colorGreen f12">金牌咨询师</span>
+          <view style="width:50%" >
+            <view class="mt3">
+              <u-icon name="account" color="#ff6600" ></u-icon>
+              <span class="color2 colorYellow f12">金牌顾问</span>
             </view>
-            <view class="mt5 textOver2 f12 color3" style="width: 160px">{{
+            <view class="mt3">{{ item.username }}</view>
+            <view class="mt5 textOver3 f12 color3" >
+              {{
               item.intro
-            }}</view>
+              }}
+            </view>
           </view>
         </view>
-        <view class="flexCenter mb10">
-          <view class="reBtn lineBtn" @click="$commonJS.gottkefu"
-            >服务热线</view
-          >
-          <view class="reBtn yellowBtn ml10" @click="call(item.phone)"
-            >咨询顾问</view
-          >
-        </view>
+        
       </view>
     </view>
+    <view class="schoolSro">
+      <view
+        class="mr10 srcItem"
+        v-for="(item, index) in consultantList.arr2"
+        :key="index + 'consultant'"
+      >
+        <view class="recomed flexBetween">
+          <view style="width:50%">
+            <u-avatar :src="item.imgurl" :show-level="true" style="width: 55px; height: 55px"></u-avatar>
+            <view class="reBtn blueBtn mt5" @click="call(item.phone)">咨询经理</view>
+          </view>
+          <view style="width:50%" >
+            <view class="mt3">
+              <u-icon name="account" color="#11BBB8" ></u-icon>
+              <span class="color2 colorGreen f12">客户经理</span>
+            </view>
+            <view class="mt3">{{ item.username }}</view>
+            <view class="mt5 textOver3 f12 color3" >
+              {{
+              item.intro
+              }}
+            </view>
+          </view>
+        </view>
+        
+      </view>
+    </view>
+    <view class="schoolSro">
+      <view
+        class="mr10 srcItem"
+        v-for="(item, index) in consultantList.arr3"
+        :key="index + 'consultant'"
+      >
+        <view class="recomed flexBetween">
+          <view style="width:50%">
+            <u-avatar :src="item.imgurl" :show-level="true" style="width: 55px; height: 55px"></u-avatar>
+            <view class="reBtn greenBtn mt5" @click="call(item.phone)">咨询经理</view>
+          </view>
+          <view style="width:50%">
+            <view class="mt3">
+              <u-icon name="account" color="#45b2fd"></u-icon>
+              <span class="color2 colorBlue f12">市场经理</span>
+            </view>
+            <view class="mt3">{{ item.username }}</view>
+            <view class="mt5 textOver3 f12 color3" >
+              {{
+              item.intro
+              }}
+            </view>
+          </view>
+        </view>
+        
+      </view>
+    </view>
+
   </view>
 </template>
 
@@ -49,36 +94,51 @@
 export default {
   data() {
     return {
-      consultantList: [],
-    };
+      consultantList: {
+        arr1: [],
+        arr2: [],
+        arr3: []
+      }
+    }
   },
   mounted() {
-    this.findConsultantList();
+    this.findConsultantList()
   },
   methods: {
     // 获取员工列表
     async findConsultantList() {
       var data = {
         skip: 0,
-        limit: 999999,
-        fuzz: "isrecomed",
-        input: "是",
-      };
-      await this.$axios.post(this.$api.findUser, data).then((res) => {
+        limit: 9999999,
+        fuzz: 'isrecomed',
+        input: '是'
+      }
+      await this.$axios.post(this.$api.findUser, data).then(res => {
         if (res.code == 200) {
-          this.consultantList = [];
-          this.consultantList = res.data[0].data;
+          let arr = res.data[0].data
+          arr.sort(() => {
+            return 0.5 - Math.random()
+          })
+          let num = 1
+          arr.map(item => {
+            this.consultantList['arr' + num].push(item)
+            if (num >= 3) {
+              num = 1
+            } else {
+              num++
+            }
+          })
         }
-      });
+      })
     },
     call(phone) {
-      var a = document.createElement("a");
-      a.setAttribute("href", "tel:" + phone);
-      document.body.appendChild(a);
-      a.click();
-    },
-  },
-};
+      var a = document.createElement('a')
+      a.setAttribute('href', 'tel:' + phone)
+      document.body.appendChild(a)
+      a.click()
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -87,21 +147,32 @@ export default {
   border-radius: 5px;
 }
 .reBtn {
-  width: 70px;
+  width: 63px;
   height: 23px;
   line-height: 23px;
   border-radius: 23px;
   color: #ffffff;
   text-align: center;
   font-size: 12px;
+  margin-bottom:10px;
+  position: relative;
+  left:-3px;
 }
 .lineBtn {
   border: 1px solid #ff6600;
   color: #ff6600;
 }
+.lineBtn2 {
+  border: 1px solid #3cc8c9;
+  color: #3cc8c9;
+}
+.lineBtn3 {
+  border: 1px solid #2979ff;
+  color: #2979ff;
+}
 .recomed {
-  width: 250px;
-  height: 80px;
+  width: 166px;
+  height: 105px;
   padding: 10px 10px 0 10px;
 }
 .content {
@@ -136,5 +207,15 @@ export default {
 .schoolSro {
   display: flex;
   overflow-x: auto;
+  margin-bottom: 10px;
+}
+.textOver3{
+  text-overflow: -o-ellipsis-lastline;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
 }
 </style>
