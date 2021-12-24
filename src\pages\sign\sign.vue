@@ -45,11 +45,11 @@
       <view id="poster" class="u-content">
         <view v-html="contractDetails.remarks"></view>
         <view class="mt10 signBox poRelative">
-          客户签名：
+          甲方签名：
           <u-image
             :src="signBase64"
             width="120rpx"
-            height="280rpx"
+            height="280rpx" 
             shape="square"
             style="
               transform: rotate(-90deg);
@@ -60,7 +60,7 @@
           ></u-image>
         </view>
         <view class="poRelative">
-          <view class="mt10 signBox">公司盖章：四川铸力金融服务外包有限公司</view>
+          <view class="mt10 signBox">乙方盖章：四川铸力金融服务外包有限公司</view>
           <u-image
             :src="'/static/imgs/stamped.png'"
             width="220rpx"
@@ -142,8 +142,7 @@ export default {
         scrollTop: 0,
         duration: 0
       })
-      this.contractDetails.time = `${new Date().getFullYear()}/${new Date().getMonth() +
-        1}/${new Date().getDate()}`
+      this.contractDetails.time = this.$commonJS.dateTime()
       const timeout = setTimeout(async () => {
         const shareContent = document.querySelector('#poster')
         const canvas = await html2canvas(shareContent, {
@@ -187,6 +186,10 @@ export default {
           canvasId: 'handWriting',
           fileType: 'png',
           quality: 1, //图片质量
+          destWidth:600,
+          destHeight:1400,
+          scale: 3, //放大倍数增加清晰度 // window.devicePixelRatio是设备像素比
+          dpi: window.devicePixelRatio * 3,
           success(res) {
             _this.signBase64 = res.tempFilePath
             _this.showContrat = false
@@ -198,8 +201,8 @@ export default {
     // 上传签名图片
     async capture2() {
       this.loadingShow = true
-      this.contractDetails.time = `${new Date().getFullYear()}/${new Date().getMonth() +
-        1}/${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`
+      // this.contractDetails.time = `${new Date().getFullYear()}/${new Date().getMonth() +
+      //   1}/${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`
       await this.$axios
         .post(this.$api.uploadPhoneContractImg, {
           oldimgurl: this.contractDetails.imgurl,
