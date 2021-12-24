@@ -87,7 +87,7 @@
       </u-form>
     </view>
     <userList :UserCheck="UserCheck" @cellChange="cellChange"></userList>
-    <view  v-if="only != 'true'" class="footerBox flexCenter">
+    <view v-if="only != 'true'" class="footerBox flexCenter">
       <u-button
         v-if="ruleForm.status =='草稿'"
         hover-class="none"
@@ -176,7 +176,7 @@ export default {
           }
         ]
       },
-      only:false
+      only: false
     }
   },
   onLoad(option) {
@@ -272,25 +272,31 @@ export default {
       if (this.isNew) {
         var data = {
           skip: 0,
-          limit: 9,
+          limit: 99999,
           category: '全部客户',
           fuzz: 'phone',
           input: this.ruleForm.phone
         }
         let res = await this.$axios.post(this.$api.findEnterprise, data)
         if (res.code == 200) {
-          let tableData = res.data[0].data
-          if (tableData.length != 0) {
-            let val = tableData[0]
-            let valtime = val.time.split(' ')[0]
-            let time = `${new Date().getFullYear()}/${new Date().getMonth()+1}/${new Date().getDate()}`
-            if (valtime == time) {
-              uni.showToast({
-                title: '该客户今日已被'+val.manager1+'提交',
-                icon: 'none'
-              })
-              return
+          let arr = res.data[0].data
+          let time = this.$commonJS.dateTime()
+          let isTrue = false
+          let tabdata = {}
+          for (let item of arr) {
+            let valtime = item.time.split(' ')[0]
+            if (item.status != '审核结束' && valtime == time) {
+              isTrue = true
+              tabdata = item
+              break;
             }
+          }
+          if (isTrue) {
+            uni.showToast({
+              title: '该客户今日已被' + tabdata.manager1 + '提交',
+              icon: 'none'
+            })
+            return
           }
         }
         if (type == 'submit') {
