@@ -67,7 +67,7 @@ const phoneNum = (phone) => {
 
 const agents = (arr) => {
     //我的代办
-    let arrTime = `${new Date().getFullYear()}/${new Date().getMonth()+1}/${new Date().getDate()}`.split('/') //现在时间
+    let arrTime = dateTime().split('/') //现在时间
     let agentsList = []
     arr.map(item => {
         let itemTime = item.endtime.split('-') //结束时间
@@ -86,9 +86,9 @@ const agents = (arr) => {
         } else if (item.optertime == '月提示' && now.data >= 0) {
             var year = arrTime[0]
             var month = parseInt(arrTime[1])
-            let monthData = year + '-' + month + '-' + itemTime[2]
+            let monthData = year + '-' + month + '-' +  parseInt(itemTime[2])
             let mnow = getDistanceSpecifiedTime(monthData + ' 23:59:59')
-            if (mnow.data <= parseInt(item.tipstime)) {
+            if (mnow.data>=0 && mnow.data <= parseInt(item.tipstime)) {
                 item['title'] =
                     '您的-' +
                     item.type +
@@ -134,6 +134,19 @@ const gottkefu = () => { //客服系统跳转
     // a.click();
 }
 
+const dateTime =()=>{
+    let date = new Date() 
+    let Year = date.getFullYear()
+    let Month = date.getMonth()+1>=10 ? date.getMonth()+1 : '0' + (date.getMonth()+1)
+    let Day = date.getDate()>=10 ? date.getDate() : '0' + date.getDate()
+    // let Hours = date.getHours()>=10 ? date.getHours() : '0' + date.getHours()
+    // let Minutes = date.getMinutes()>=10 ? date.getMinutes() : '0' + date.getMinutes()
+    // let Seconds = date.getSeconds()>=10 ? date.getSeconds() : '0' + date.getSeconds()
+    // let time = `${Year}/${Month}/${Day} ${Hours}:${Minutes}:${Seconds}`
+    let time = `${Year}/${Month}/${Day}`
+    return time
+}
+
 module.exports = {
     clone,
     download,
@@ -141,5 +154,6 @@ module.exports = {
     phoneNum,
     agents,
     gottkefu,
-    bubbleSort
+    bubbleSort,
+    dateTime
 }
