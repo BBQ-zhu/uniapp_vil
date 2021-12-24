@@ -88,7 +88,7 @@ export default {
         conrelat4: '', //联系人的关系4
         hometeam: '', //归属团队
         manager1: '', //客户经理
-        manager2: '', //金融客服
+        manager2: '', //客服经理
         manager3: '', //代办客服
         status: '草稿', //审核状态
         remarks: '', //备注信息
@@ -684,7 +684,7 @@ export default {
       },
       immediate: true,
       deep: true,
-      only:false
+      only: false
     }
   },
   onLoad(option) {
@@ -734,7 +734,7 @@ export default {
         })
         return
       }
-      if (!/^1[3|4|5|7|8]\d{9}$/.test(this.ruleForm.phone)) {
+      if (!/^1[3|4|5|6|7|8|9]\d{9}$/.test(this.ruleForm.phone)) {
         uni.showToast({
           title: '请输入客户正确手机号',
           icon: 'none'
@@ -748,7 +748,6 @@ export default {
         })
         return
       }
-
       if (type == 'submit') {
         if (this.ruleForm.idcard.length != 18) {
           uni.showToast({
@@ -761,7 +760,7 @@ export default {
           this.ruleForm.hires &&
           this.ruleForm.hires != '自由职业' &&
           this.ruleForm.hires != '无固定职业' &&
-          !/^1[3|4|5|7|8]\d{9}$/.test(this.ruleForm.unitphone)
+          !/^1[3|4|5|6|7|8|9]\d{9}$/.test(this.ruleForm.unitphone)
         ) {
           uni.showToast({
             title: '请输入正确单位手机号',
@@ -771,11 +770,11 @@ export default {
         }
         if (
           (this.ruleForm.contacts1 &&
-            !/^1[3|4|5|7|8]\d{9}$/.test(this.ruleForm.conphone1)) ||
+            !/^1[3|4|5|6|7|8|9]\d{9}$/.test(this.ruleForm.conphone1)) ||
           (this.ruleForm.contacts2 &&
-            !/^1[3|4|5|7|8]\d{9}$/.test(this.ruleForm.conphone2)) ||
+            !/^1[3|4|5|6|7|8|9]\d{9}$/.test(this.ruleForm.conphone2)) ||
           (this.ruleForm.contacts3 &&
-            !/^1[3|4|5|7|8]\d{9}$/.test(this.ruleForm.conphone3))
+            !/^1[3|4|5|6|7|8|9]\d{9}$/.test(this.ruleForm.conphone3))
         ) {
           this.$message.error('请输入正确紧急联系人手机号')
           return
@@ -793,74 +792,85 @@ export default {
       if (type == 'save') {
         this.ruleForm.status = '草稿'
       }
-
       if (this.isNew) {
-        var data = {
+        var data1 = {
           skip: 0,
-          limit: 9,
+          limit: 99999,
           category: '全部客户',
           fuzz: 'phone',
           input: this.ruleForm.phone
         }
-        let res = await this.$axios.post(this.$api.findCustomer, data)
-        if (res.code == 200) {
-          let tableData = res.data[0].data
-          if (tableData.length != 0) {
-            let val = tableData[0]
-            let valtime = val.time.split(' ')[0]
-            let time = new Date().toLocaleDateString()
-            if (valtime == time) {
-              uni.showToast({
-                title: '该用户今日已提交',
-                icon: 'none'
-              })
-              return
+        let res = await this.$axios.post(this.$api.findCustomer, data1)
+        if (res.code == 200 && res.data[0].data.length>0) {
+          let arr = res.data[0].data
+          let time = this.$commonJS.dateTime()
+          let isTrue = false
+          let tabdata = {}
+          for (let item of arr) {
+            let valtime = item.time.split(' ')[0]
+            if (item.status != '审核结束' && valtime == time) {
+              isTrue = true
+              tabdata = item
+              break;
             }
+          }
+          if (isTrue) {
+            uni.showToast({
+              title: '该客户今日已被' + tabdata.manager1 + '提交',
+              icon: 'none'
+            })
+            return
           }
         }
         if (type == 'submit') {
           this.ruleForm.status = '待审核'
         }
-        this.$axios.post(this.$api.createCustomer, this.ruleForm).then(res => {
-          if (res.code == 200) {
-            let data = {
-              proid: 'new',
-              type: '提交-贷款客户', // 数据来源
-              name: this.ruleForm.name, // 客户名称
-              phone: this.ruleForm.phone, // 电话
-              submitby: this.ruleForm.manager1, // 提交人
-              handler: this.ruleForm.manager2, // 处理人
-              path: '/Customer', // 跳转贷款客户
-              read: 'false' // 是否已处理
-            }
-            this.$axios.post(this.$api.createAgent, data).then(res => {
-              if (res.code == 200) {
-                uni.showToast({
-                  title: '提交成功',
-                  icon: 'none'
-                })
+        this.$axios
+          .post(this.$api.createCustomer, this.ruleForm)
+          .then(res => {
+            if (res.code == 200) {
+              let data = {
+                proid: 'new',
+                type: '提交-贷款客户', // 数据来源
+                name: this.ruleForm.name, // 客户名称
+                phone: this.ruleForm.phone, // 电话
+                submitby: this.ruleForm.manager1, // 提交人
+                handler: this.ruleForm.manager2, // 处理人
+                path: '/Customer', // 跳转贷款客户
+                read: 'false' // 是否已处理
               }
-            })
-          }
-        }).catch(()=>{
-          this.ruleForm.status = '草稿'
-        })
+              this.$axios.post(this.$api.createAgent, data).then(res => {
+                if (res.code == 200) {
+                  uni.showToast({
+                    title: '提交成功',
+                    icon: 'none'
+                  })
+                }
+              })
+            }
+          })
+          .catch(() => {
+            this.ruleForm.status = '草稿'
+          })
       } else {
         if (type == 'submit') {
           this.ruleForm.status = '待审核'
         }
-        this.$axios.post(this.$api.updateCustomer, this.ruleForm).then(res => {
-          if (res.code == 200) {
-            uni.showToast({
-              title: '提交成功',
-              icon: 'none'
-            })
-          }else{
+        this.$axios
+          .post(this.$api.updateCustomer, this.ruleForm)
+          .then(res => {
+            if (res.code == 200) {
+              uni.showToast({
+                title: '提交成功',
+                icon: 'none'
+              })
+            } else {
+              this.ruleForm.status = '草稿'
+            }
+          })
+          .catch(() => {
             this.ruleForm.status = '草稿'
-          }
-        }).catch(()=>{
-          this.ruleForm.status = '草稿'
-        })
+          })
       }
       let userInfo = uni.getStorageSync('userInfo')
       let dataLogs = {
@@ -888,22 +898,21 @@ export default {
         .then(res => {
           if (res.code == 200) {
             let arr = res.data[0].data
-            this.recomList = []
             // 第一轮匹配：需求资金、贷款期限是否在范围内
-            let newArr1 = []
-            arr.map(item => {
-              if (
-                parseFloat(obj.fund) >= parseFloat(item.minamount) &&
-                parseFloat(obj.fund) <= parseFloat(item.maxamount) &&
-                parseFloat(obj.tenor) >= parseFloat(item.minterm) &&
-                parseFloat(obj.tenor) <= parseFloat(item.maxterm)
-              ) {
-                newArr1.push(item)
-              }
-            })
+            // let newArr1 = []
+            // arr.map(item => {
+            //   if (
+            //     parseFloat(obj.fund) >= parseFloat(item.minamount) &&
+            //     parseFloat(obj.fund) <= parseFloat(item.maxamount) &&
+            //     parseFloat(obj.tenor) >= parseFloat(item.minterm) &&
+            //     parseFloat(obj.tenor) <= parseFloat(item.maxterm)
+            //   ) {
+            //     newArr1.push(item)
+            //   }
+            // })
             // 第二轮匹配：匹配特殊字段
             let recomList = []
-            newArr1.map(item => {
+            arr.map(item => {
               let check = []
               //根据匹配条件筛选值
               for (let val of item.match) {
