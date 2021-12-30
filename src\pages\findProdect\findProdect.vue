@@ -22,6 +22,7 @@
         style="margin-top: 60px"
         :recomList="recomList"
         :status="loadStatus"
+        @reachBottom="reachBottom"
       ></recommend>
     </view>
   </view>
@@ -54,6 +55,12 @@ export default {
     this.searchChange();
   },
   methods: {
+    reachBottom() {
+      // 监听上拉加载
+      this.loadStatus = "loading";
+      this.find.currentPage++
+      this.searchChange();
+    },
     customFind() {
       this.find.currentPage = 1;
       this.recomList = [];
