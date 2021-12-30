@@ -17,6 +17,7 @@
         class="mt10"
         :newsList="newsList"
         :status="loadStatus"
+        @reachBottom="reachBottom"
       ></newsList>
     </view>
   </view>
@@ -49,6 +50,12 @@ export default {
     this.getNewsList();
   },
   methods: {
+    reachBottom() {
+    // 监听上拉加载
+    this.loadStatus = "loading";
+    this.find.currentPage++;
+    this.getNewsList();
+  },
     getImg() {
       this.$axios.post(this.$api.findScrollImg, "post").then((res) => {
         this.swiperList = [];
