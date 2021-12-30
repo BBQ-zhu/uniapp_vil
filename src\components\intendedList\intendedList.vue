@@ -66,16 +66,18 @@
       </view>
       <u-line></u-line>
     </u-swipe-action>
-    <view style="width: 100%; height: 20px"></view>
-    <!-- 加载更多组件 -->
-    <u-loadmore :status="status" />
-    <u-loading
-      :show="loadingShow"
-      size="80"
-      color="#11BBB8"
-      mode="circle"
-      style="position: fixed; top: 50%; left: 45%; z-index: 9999"
-    ></u-loading>
+    <view @click="$emit('reachBottom')">
+      <view style="width: 100%; height: 20px" class="u-text-center" ></view>
+      <!-- 加载更多组件 -->
+      <u-loadmore :status="status" />
+      <u-loading
+        :show="loadingShow"
+        size="80"
+        color="#11BBB8"
+        mode="circle"
+        style="position: fixed; top: 50%; left: 45%; z-index: 9999"
+      ></u-loading>
+    </view>
   </view>
 </template>
 
