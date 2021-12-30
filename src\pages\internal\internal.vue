@@ -104,7 +104,7 @@
       </view>
       <view class="mt10 mb20">
         <u-cell-group class="f12">
-          <u-cell-item title="客户代办" icon="chat-fill" @click="cellChange('agents')">
+          <u-cell-item title="客户待办" icon="chat-fill" @click="cellChange('agents')">
             <span class="colorRed fw600" v-if="agentsList.length > 0">
               {{
               agentsList.length
@@ -205,6 +205,12 @@ export default {
     },
     //合同代办、抵押客户代办合并
     async findMortgage(result) {
+      let newArr = []
+      result.map(item=>{
+        if(item.status == '签约成功'){
+          newArr.push(item)
+        }
+      })
       let mortArr = []
       var data = {
         skip: 0,
@@ -222,14 +228,15 @@ export default {
       } else {
         mortArr = []
       }
-      let allArr = mortArr.concat(result)
+      let allArr = mortArr.concat(newArr)
+      
       // 客户代办
       this.agentsList = this.$commonJS.agents(allArr)
     },
     //根据合同列表分时间段统计业绩
     statistics(arr) {
       let obj = { month: 0, year: 0, all: 0 }
-      let nowTieme = `${new Date().getFullYear()}/${new Date().getMonth()+1}/${new Date().getDate()}`.split('/')
+      let nowTieme = this.$commonJS.dateTime().split('/')
       arr.map(item => {
         let time = item.time.split('/') // 合同起始时间
         let exp = parseInt(item.expenses) || 0
