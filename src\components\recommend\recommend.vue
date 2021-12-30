@@ -55,7 +55,9 @@
       </view>
       <u-line style="margin: 15px 0"></u-line>
     </view>
-    <u-loadmore :status="status" /> 
+    <view @click="$emit('reachBottom')">
+      <u-loadmore :status="status"/> 
+    </view>
   </view>
 </template>
 
