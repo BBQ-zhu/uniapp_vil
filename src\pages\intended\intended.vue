@@ -10,9 +10,9 @@
       }"
     ></u-navbar> 
 
-    <view style>
+    <view>
       <!-- 意向客户列表 -->
-      <intendedList :list="loanList" :status="loadStatus"></intendedList>
+      <intendedList :list="loanList" :status="loadStatus" @reachBottom="reachBottom"></intendedList>
     </view>
   </view>
 </template>
@@ -44,6 +44,12 @@ export default {
     this.getLoanList();
   },
   methods: {
+    reachBottom() {
+      // 手动点击加载
+      this.loadStatus = "loading";
+      this.find.currentPage++;
+      this.getLoanList();
+    },
     getLoanList() {
       var data = {
         skip: this.find.limit * (this.find.currentPage - 1),
@@ -67,12 +73,14 @@ export default {
                 newArr.push(item);
               }
             });
-            this.loanList = this.loanList.concat(arr)
+            this.loanList = this.loanList.concat(newArr)
           }
         } else {
           this.find.currentPage--
         }
-      });
+      }).catch(()=>{
+        this.find.currentPage--
+      })
     },
   },
 };
