@@ -760,6 +760,7 @@ export default {
           this.ruleForm.hires &&
           this.ruleForm.hires != '自由职业' &&
           this.ruleForm.hires != '无固定职业' &&
+          this.ruleForm.unitphone &&
           !/^1[3|4|5|6|7|8|9]\d{9}$/.test(this.ruleForm.unitphone)
         ) {
           uni.showToast({
@@ -776,7 +777,10 @@ export default {
           (this.ruleForm.contacts3 &&
             !/^1[3|4|5|6|7|8|9]\d{9}$/.test(this.ruleForm.conphone3))
         ) {
-          this.$message.error('请输入正确紧急联系人手机号')
+          uni.showToast({
+            title: '请输入正确紧急联系人手机号',
+            icon: 'none'
+          })
           return
         }
         if (!this.ruleForm.hometeam) {
@@ -878,7 +882,7 @@ export default {
         logdata: JSON.stringify(this.ruleForm),
         remarks: `移动端-${this.isNew ? '新增' : '修改'}-贷款客户资料`
       }
-      this.$axios.post(this.$api.createlogs, dataLogs) //创建日志
+      await this.$axios.post(this.$api.createlogs, dataLogs) //创建日志
       setTimeout(() => {
         uni.navigateTo({
           url: '/pages/internal/internal'
@@ -918,8 +922,7 @@ export default {
               for (let val of item.match) {
                 if (
                   typeof item[val] == 'object' &&
-                  val != 'address' &&
-                  obj[val]
+                  val != 'address'
                 ) {
                   check.push(item[val].includes(obj[val]))
                 } else if (val == 'address' && obj[val].length) {
@@ -933,6 +936,9 @@ export default {
                 } else if (obj[val]) {
                   check.push(item[val] == obj[val])
                 }
+              }
+              if(item.match.length == 0){
+                recomList.push(item);
               }
               if (item.key == '选中的都需要满足') {
                 if (
