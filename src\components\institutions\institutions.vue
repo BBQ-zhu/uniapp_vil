@@ -1,14 +1,14 @@
 <template>
   <view >
     <view class="u-text-center" style="color: #b7b7b7">合作伙伴</view>
-    <view class="flexCenter mt10">
+    <view class="flexBetween mt10">
     <img
       v-for="(item,index) in swiperList"
       :key="index+'ins'"
       :src="item.image"
       mode="aspectFit"
-      style="width:75px;height:32px;"
-      class="mt10 mr5 ml5"
+      style="width:24%;max-width:74px;"
+      class="mt10"
     />
     </view>
   </view>
