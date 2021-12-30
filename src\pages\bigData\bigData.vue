@@ -3,7 +3,7 @@
     <u-navbar
       back-txt="返回"
       back-icon-color="#fff"
-      title="大数据查询"
+      title="客户查询"
       title-color="#fff"
       :background="{
         backgroundImage: 'linear-gradient(to right bottom,#46e3c4,#3cc8c9)',
@@ -39,9 +39,19 @@
         </view>
       </u-popup>
       <!-- 贷款申请列表 -->
-      <loanList v-if="ruleForm.type == '贷款客户' && !show" :only="'true'" :list="dataList" :status="loadStatus"></loanList>
+      <loanList
+        v-if="ruleForm.type == '贷款客户' && !show"
+        :only="'true'"
+        :list="dataList"
+        :status="loadStatus"
+      ></loanList>
       <!-- 企业申请列表 -->
-      <enterpriseList v-if="ruleForm.type == '企业客户' && !show" :only="'true'" :list="dataList" :status="loadStatus"></enterpriseList>
+      <enterpriseList
+        v-if="ruleForm.type == '企业客户' && !show"
+        :only="'true'"
+        :list="dataList"
+        :status="loadStatus"
+      ></enterpriseList>
     </view>
   </view>
 </template>
@@ -71,7 +81,7 @@ export default {
       },
       //申请列表
       dataList: [],
-      loadStatus: 'momore', //loadmore 加载前, loading 加载中, momore 没有数据了
+      loadStatus: 'momore' //loadmore 加载前, loading 加载中, momore 没有数据了
     }
   },
   onLoad() {
@@ -92,13 +102,18 @@ export default {
         limit: 9999999,
         fuzz: 'idcard',
         input: this.ruleForm.idcard,
-        only:true //身份证号码必须全等才能查询出来
+        only: true //身份证号码必须全等才能查询出来
       }
-      let res = await this.$axios.post(this.ruleForm.type == '贷款客户'? this.$api.findCustomer : this.$api.findEnterprise,data)
-      if(res.code == 200){
+      let res = await this.$axios.post(
+        this.ruleForm.type == '贷款客户'
+          ? this.$api.findCustomer
+          : this.$api.findEnterprise,
+        data
+      )
+      if (res.code == 200) {
         let arr = res.data[0].data
         this.dataList = arr
-        if(arr.length == 0){
+        if (arr.length == 0) {
           uni.showToast({
             title: '暂无该用户数据',
             icon: 'none'
