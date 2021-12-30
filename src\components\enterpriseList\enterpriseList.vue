@@ -70,7 +70,9 @@
     </u-swipe-action>
     <view style="width: 100%; height: 20px"></view>
     <!-- 加载更多组件 -->
-    <u-loadmore :status="status" />
+    <view @click="$emit('reachBottom')">
+      <u-loadmore :status="status" />
+    </view>
     <u-loading
       :show="loadingShow"
       size="80"
