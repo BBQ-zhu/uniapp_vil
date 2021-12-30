@@ -61,16 +61,18 @@
             >审批反馈：{{item.feedback || '暂无'}}</view
           >
           <view class="flexBetween mt5">
-            <view class="color2">职业类型：{{ item.hires || "暂无" }}</view>
+            <view class="color2">{{ item.hires}}</view>
             <view class="color2">{{ item.time }}</view>
           </view>
         </view>
       </view>
       <u-line></u-line>
     </u-swipe-action>
-    <view style="width: 100%; height: 20px"></view>
-    <!-- 加载更多组件 -->
-    <u-loadmore :status="status" />
+    <view @click="$emit('reachBottom')">
+      <view style="width: 100%; height: 20px"></view>
+      <!-- 加载更多组件 -->
+      <u-loadmore :status="status" />
+    </view>
     <!-- 匹配产品列表弹出 -->
     <u-popup v-model="showList" mode="bottom" border-radius="14">
       <scroll-view
@@ -184,7 +186,7 @@ export default {
       }
     },
     //产品匹配
-    async alignment(obj) {
+    async alignment(obj) { 
       this.loadingShow = true;
       var data = {
         skip: 0,
@@ -200,26 +202,25 @@ export default {
             this.recomList = [];
             this.recomMony = 0;
             // 第一轮匹配：需求资金、贷款期限是否在范围内
-            let newArr1 = [];
-            arr.map((item) => {
-              if (
-                parseFloat(obj.fund) >= parseFloat(item.minamount) &&
-                parseFloat(obj.fund) <= parseFloat(item.maxamount) &&
-                parseFloat(obj.tenor) >= parseFloat(item.minterm) &&
-                parseFloat(obj.tenor) <= parseFloat(item.maxterm)
-              ) {
-                newArr1.push(item);
-              }
-            });
+            // let newArr1 = [];
+            // arr.map((item) => {
+            //   if (
+            //     parseFloat(obj.fund) >= parseFloat(item.minamount) &&
+            //     parseFloat(obj.fund) <= parseFloat(item.maxamount) &&
+            //     parseFloat(obj.tenor) >= parseFloat(item.minterm) &&
+            //     parseFloat(obj.tenor) <= parseFloat(item.maxterm)
+            //   ) {
+            //     newArr1.push(item);
+            //   }
+            // });
             // 第二轮匹配：匹配特殊字段
-            newArr1.map((item) => {
+            arr.map((item) => {
               let check = [];
               //根据匹配条件筛选值
               for (let val of item.match) {
                 if (
                   typeof item[val] == "object" &&
-                  val != "address" &&
-                  obj[val]
+                  val != "address"
                 ) {
                   check.push(item[val].includes(obj[val]));
                 } else if (val == "address" && obj[val].length) {
@@ -228,11 +229,14 @@ export default {
                   );
                 } else if (val == "age" && obj[val]) {
                   check.push(item[val] >= obj[val]);
-                } else if (val == "revenue" && obj[val]) {
+                } else if (val == "revenue" && obj[val]) { //月收入
                   check.push(item[val] <= obj[val]);
                 } else if (obj[val]) {
                   check.push(item[val] == obj[val]);
                 }
+              }
+              if(item.match.length == 0){
+                this.recomList.push(item);
               }
               if (item.key == "选中的都需要满足") {
                 if (
