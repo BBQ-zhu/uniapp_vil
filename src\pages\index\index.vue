@@ -57,7 +57,7 @@
     <!-- 咨询顾问 -->
     <consultant class="mt5"></consultant>
     <!-- 推荐服务 -->
-    <recommend class="mt10" :name="'推荐服务'" :recomList="recomList" :status="loadStatus"></recommend>
+    <recommend class="mt10" :name="'推荐服务'" :recomList="recomList" :status="loadStatus"  @reachBottom="reachBottom"></recommend>
     <view class="conCenter u-text-center">
       <u-link href="https://beian.miit.gov.cn/" class="beian">备案号：蜀ICP备20004812号-1</u-link>
     </view>
@@ -68,7 +68,7 @@
 export default {
   data() {
     return {
-      agentsList: '', //代办数量
+      agentsList: '',
       //轮播图
       swiperList: [],
       //导航图标
@@ -95,6 +95,7 @@ export default {
     }
   },
   async onLoad() {
+
     //判断是移动端还是PC端，并做跳转
     var ua = window.navigator.userAgent.toLowerCase()
     if (
@@ -104,8 +105,8 @@ export default {
     ) {
       // PC端
       console.log('PC端')
-      // window.location.href = 'http://zld.zhulif.com/#/'
-      window.location.href = 'http://localhost:8080/#/'
+      window.location.href = 'http://zld.zhulif.com/#/'
+      // window.location.href = 'http://localhost:8080/#/'
     } else if (ua.indexOf('iphone') > 0 || ua.indexOf('android') > 0) {
       // 移动端
       console.log('移动端')
@@ -126,6 +127,12 @@ export default {
     await this.searchChange()
   },
   methods: {
+    reachBottom() {
+      // 监听上拉加载
+      this.loadStatus = 'loading'
+      this.find.currentPage++
+      this.searchChange()
+    },
     //统计浏览量
     statistics(){
       let year = (new Date()).getFullYear()
@@ -151,7 +158,7 @@ export default {
       //我的代办数量
       var data = {
         skip: 0,
-        limit: 9999,
+        limit: 999999,
         fuzz: 'phone',
         input: (uni.getStorageSync('vipUserInfo') || {}).phone
       }
@@ -319,4 +326,5 @@ export default {
 .conCenter {
   padding: 10px 14px;
 }
+
 </style>
