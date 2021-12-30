@@ -13,7 +13,7 @@
     <u-swiper :list="swiperList" @click="swiperChange"></u-swiper>
     <view style>
       <!-- 招聘列表 -->
-      <recruit class="mt10" :recruitList="recruitList" :status="loadStatus"></recruit>
+      <recruit class="mt10" :recruitList="recruitList" :status="loadStatus"  @reachBottom="reachBottom"></recruit>
     </view>
   </view>
 </template>
@@ -40,12 +40,17 @@ export default {
   },
   onReachBottom() {
     // 监听上拉加载
-    // 监听上拉加载
     this.loadStatus = 'loading'
     this.find.currentPage++
     this.getRecruitList()
   },
   methods: {
+    reachBottom() {
+      // 监听上拉加载
+      this.loadStatus = 'loading'
+      this.find.currentPage++
+      this.getRecruitList()
+    },
     getImg() {
       this.$axios.post(this.$api.findScrollImg, 'post').then(res => {
         this.swiperList = []
