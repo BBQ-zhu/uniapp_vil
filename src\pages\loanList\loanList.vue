@@ -12,9 +12,9 @@
 
     <view style>
       <!-- 贷款申请列表 --> 
-      <loanList v-if="type == 'loanList'" :list="loanList" :status="loadStatus"></loanList>
+      <loanList v-if="type == 'loanList'" :list="loanList" :status="loadStatus" @reachBottom="reachBottom"></loanList>
       <!-- 企业申请列表 -->
-      <enterpriseList v-if="type == 'enterprise'" :list="loanList" :status="loadStatus"></enterpriseList>
+      <enterpriseList v-if="type == 'enterprise'" :list="loanList" :status="loadStatus" @reachBottom="reachBottom"></enterpriseList>
     </view>
   </view>
 </template>
@@ -46,6 +46,12 @@ export default {
     this.getLoanList();
   },
   methods: {
+    reachBottom() {
+      // 监听上拉加载
+      this.loadStatus = "loading";
+      this.find.currentPage++;
+      this.getLoanList();
+    },
     getLoanList() {
       var data = {
         skip: this.find.limit * (this.find.currentPage - 1),
@@ -69,7 +75,7 @@ export default {
                 newArr.push(item);
               }
             });
-            this.loanList = this.loanList.concat(arr)
+            this.loanList = this.loanList.concat(newArr)
           }
         } else {
           this.find.currentPage--
